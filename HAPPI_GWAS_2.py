@@ -1,0 +1,409 @@
+import sys
+import os
+import re
+import json
+import pathlib
+import shlex
+import subprocess
+import argparse
+
+import pandas as pd
+
+
+def main(args):
+    #######################################################################
+    # Get arguments
+    #######################################################################
+    project_name = args.project_name
+    workflow_path = args.workflow_path
+
+    input_folder = args.input_folder
+    output_folder = args.output_folder
+
+    vcf_file = args.vcf_file
+
+    genotype_hapmap = args.genotype_hapmap
+    genotype_data = args.genotype_data
+    genotype_map = args.genotype_map
+
+    kinship = args.kinship
+    z_matrix = args.z_matrix
+    corvariance_matrix = args.corvariance_matrix
+
+    snp_maf = args.snp_maf
+    model = args.model
+    pca_total = args.pca_total
+
+    memory = args.memory
+    threads = args.threads
+
+    jobs = args.jobs
+    latency_wait = args.latency_wait
+    cluster = args.cluster
+
+    p_value_filter = args.p_value_filter
+    fdr_corrected_p_value_filter = args.fdr_corrected_p_value_filter
+    ld_length = args.ld_length
+
+    #######################################################################
+    # Check mandatory and at-least-one arguments
+    #######################################################################
+    # Project name checking
+    if project_name is None:
+        print('Project name is missing!!!')
+        sys.exit(1)
+    if project_name == '':
+        print('Project name is missing!!!')
+        sys.exit(1)
+
+    # Workflow path checking
+    if workflow_path is None:
+        print('Workflow path is missing!!!')
+        sys.exit(1)
+    if workflow_path == '':
+        print('Workflow path is missing!!!')
+        sys.exit(1)
+    if not workflow_path.exists():
+        print('Workflow path does not exist!!!')
+        sys.exit(1)
+
+    # Input folder checking
+    if input_folder is None:
+        print('Input folder is missing!!!')
+        sys.exit(1)
+    if input_folder == '':
+        print('Input folder is missing!!!')
+        sys.exit(1)
+    if not input_folder.exists():
+        print('Input folder does not exist!!!')
+        sys.exit(1)
+
+    # VCF file checking
+    if vcf_file is None:
+        print('VCF file is missing!!!')
+        sys.exit(1)
+    if vcf_file == '':
+        print('VCF file is missing!!!')
+        sys.exit(1)
+    if not vcf_file.exists():
+        print('VCF file does not exist!!!')
+        sys.exit(1)
+
+    # At-least-one arguments checking
+    if genotype_hapmap != 'NULL':
+        try:
+            genotype_hapmap = pathlib.Path(genotype_hapmap)
+            if not genotype_hapmap.exists():
+                genotype_hapmap = 'NULL'
+        except Exception as e:
+            genotype_hapmap = 'NULL'
+            print(e)
+    if genotype_data != 'NULL':
+        try:
+            genotype_data = pathlib.Path(genotype_data)
+            if not genotype_data.exists():
+                genotype_data = 'NULL'
+        except Exception as e:
+            genotype_data = 'NULL'
+            print(e)
+    if genotype_map != 'NULL':
+        try:
+            genotype_map = pathlib.Path(genotype_map)
+            if not genotype_map.exists():
+                genotype_map = 'NULL'
+        except Exception as e:
+            genotype_map = 'NULL'
+            print(e)
+    if genotype_hapmap == 'NULL' and genotype_data == 'NULL' and genotype_map == 'NULL':
+        print('Genotype hapmap, genotype data, and genotype map are not provided!!!')
+        sys.exit(1)
+
+    #######################################################################
+    # Check if output parent folder exists
+    # If not, create the output parent folder
+    #######################################################################
+    if not output_folder.exists():
+        try:
+            output_folder.mkdir(parents=True)
+        except FileNotFoundError as e:
+            pass
+        except FileExistsError as e:
+            pass
+        except Exception as e:
+            pass
+        if not output_folder.exists():
+            print("Output folder does not exists!!!")
+            sys.exit(1)
+
+    # Create GAPIT output folder
+    gapit_output_folder = output_folder.joinpath('GAPIT', model)
+    if not gapit_output_folder.exists():
+        try:
+            gapit_output_folder.mkdir(parents=True)
+        except FileNotFoundError as e:
+            pass
+        except FileExistsError as e:
+            pass
+        except Exception as e:
+            pass
+        if not gapit_output_folder.exists():
+            print("GAPIT output folder does not exists!!!")
+            sys.exit(1)
+
+    # Create VCFtools_Haploview output folder
+    vcftools_haploview_output_folder = output_folder.joinpath('VCFtools_Haploview')
+    if not vcftools_haploview_output_folder.exists():
+        try:
+            vcftools_haploview_output_folder.mkdir(parents=True)
+        except FileNotFoundError as e:
+            pass
+        except FileExistsError as e:
+            pass
+        except Exception as e:
+            pass
+        if not vcftools_haploview_output_folder.exists():
+            print("VCFtools_Haploview output folder does not exists!!!")
+            sys.exit(1)
+
+    #######################################################################
+    # Generate and save GAPIT configuration file
+    #######################################################################
+    gapit_config_data = {
+        "project_name": project_name,
+        "workflow_path": str(workflow_path),
+        "input_folder": str(input_folder),
+        "output_folder": str(gapit_output_folder),
+        "genotype_hapmap": str(genotype_hapmap),
+        "genotype_data": str(genotype_data),
+        "genotype_map": str(genotype_map),
+        "kinship": kinship,
+        "z_matrix": z_matrix,
+        "corvariance_matrix": corvariance_matrix,
+        "snp_maf": snp_maf,
+        "model": model,
+        "pca_total": pca_total,
+        "memory": memory,
+        "threads": threads
+    }
+
+    with open(gapit_output_folder.joinpath("Snakemake_GAPIT_config.json"), 'w', encoding='utf-8') as writer:
+        json.dump(gapit_config_data, writer, ensure_ascii=False, indent=4)
+
+    #######################################################################
+    # Run GAPIT in Snakemake
+    #######################################################################
+
+    # Construct snakemake command array
+    snakemake_gapit_command_array = [
+        "snakemake",
+        '--jobs', str(jobs),
+        '--latency-wait', str(latency_wait),
+        '-p',
+        '--snakefile', str(workflow_path.joinpath('rules', 'r_gapit.smk')),
+        '--configfile', str(gapit_output_folder.joinpath('Snakemake_GAPIT_config.json'))
+    ]
+
+    if cluster is not None:
+        if cluster != '':
+            snakemake_gapit_command_array.append('--cluster')
+            snakemake_gapit_command_array.append("\""+str(cluster)+"\"")
+
+    # Construct snakemake command string from snakemake command array
+    snakemake_gapit_command_string = str(' '.join(snakemake_gapit_command_array))
+
+    print("\n\n{}\n".format(snakemake_gapit_command_string))
+
+    # Split snakemake command string using shlex to prepare for subprocess
+    snakemake_gapit_command = shlex.split(snakemake_gapit_command_string)
+
+    try:
+        # Run snakemake command using subprocess
+        snakemake_gapit_outcome = subprocess.run(
+            snakemake_gapit_command,
+            capture_output=True,
+            check=True,
+            universal_newlines=True
+        )
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError("\n\nOutput: \n{} \n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(e.output, e.stdout, e.stderr, e.cmd, e.returncode))
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
+    try:
+        with open(gapit_output_folder.joinpath("Snakemake_GAPIT.log"), 'w') as writer:
+            writer.write("\n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(snakemake_gapit_outcome.stdout, snakemake_gapit_outcome.stderr, snakemake_gapit_outcome.args, snakemake_gapit_outcome.returncode))
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
+    #######################################################################
+    # Combine GAPIT results
+    #######################################################################
+
+    # Data save parameters
+    header = True
+    mode = 'w'
+    # Find GAPIT results files
+    if gapit_output_folder.exists():
+        gapit_auto_output_folder = gapit_output_folder.joinpath('GAPIT_auto_output')
+        if gapit_auto_output_folder.exists():
+            gwas_result_files = list(gapit_auto_output_folder.glob('GAPIT.Association.GWAS_Results*.csv'))
+            if len(gwas_result_files) > 0:
+                for i in range(len(gwas_result_files)):
+                    # Read GWAS result file
+                    dat = pd.read_csv(filepath_or_buffer = gwas_result_files[i])
+                    # Extract the trait from filename
+                    trait = re.sub("(GAPIT.Association.GWAS_Results.)|(.csv)", "", str(gwas_result_files[i].name))
+                    trait = trait.replace(model, '')
+                    trait = trait.lstrip('\.')
+                    # Add model, trait, ld_number, ld_start, and ld_end columns
+                    dat['Model'] = model
+                    dat['Trait'] = trait
+                    dat["LD_length"] = ld_length
+                    dat["LD_start"] = dat["Pos"] - ld_length
+                    dat["LD_end"] = dat["Pos"] + ld_length
+                    dat.loc[dat.LD_start < 0, 'LD_start'] = 0
+                    # Filter data based on p-value and FDR corrected p-value
+                    dat = dat[dat["P.value"] <= p_value_filter]
+                    dat = dat[dat["H&B.P.Value"] <= fdr_corrected_p_value_filter]
+                    # Write to one output file to append all data
+                    dat.to_csv(path_or_buf = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.csv"), mode = mode, header = header, index = False)
+                    # Change parameters to make sure data append
+                    if header:
+                        header = False
+                    if mode == 'w':
+                        mode = 'a'
+            else:
+                print("No GAPIT GWAS result was created in the analysis!!!")
+                sys.exit(1)
+        else:
+            print("No GAPIT auto output folder was created in the analysis!!!")
+            sys.exit(1)
+    else:
+        print("Output folder does not exists!!!")
+        sys.exit(1)
+
+
+    #######################################################################
+    # Query LD regions and drop duplicates
+    #######################################################################
+
+    # Read GAPIT GWAS result file
+    dat = pd.read_csv(filepath_or_buffer = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.csv"))
+    # Query LD regions
+    dat = dat[["Chr", "LD_start", "LD_end"]]
+    # Sort by Chr, LD_start, and LD_end
+    dat = dat.sort_values(by=['Chr', 'LD_start', 'LD_end'])
+    # Drop duplicates
+    dat = dat.drop_duplicates()
+    # Save unique LD regions (header is not included in the output file so that snakemake part is easier)
+    dat.to_csv(path_or_buf = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".Unique_LD_Regions.csv"), mode = 'w', header = False, index = False)
+
+    #######################################################################
+    # Generate and save VCFtools_Haploview configuration file
+    #######################################################################
+    vcftools_haploview_config_data = {
+        "project_name": project_name,
+        "workflow_path": str(workflow_path),
+        "input_file": str(gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".Unique_LD_Regions.csv")),
+        "output_folder": str(vcftools_haploview_output_folder),
+        "vcf_file": str(vcf_file),
+        "memory": memory,
+        "threads": threads
+    }
+
+    with open(vcftools_haploview_output_folder.joinpath("Snakemake_VCFtools_Haploview_config.json"), 'w', encoding='utf-8') as writer:
+        json.dump(vcftools_haploview_config_data, writer, ensure_ascii=False, indent=4)
+
+    #######################################################################
+    # Run VCFtools and Haploview in Snakemake
+    #######################################################################
+
+    # Construct snakemake command array
+    snakemake_vcftools_haploview_command_array = [
+        "snakemake",
+        '--jobs', str(jobs),
+        '--latency-wait', str(latency_wait),
+        '-p',
+        '--snakefile', str(workflow_path.joinpath('rules', 'vcftools_haploview.smk')),
+        '--configfile', str(vcftools_haploview_output_folder.joinpath('Snakemake_VCFtools_Haploview_config.json'))
+    ]
+
+    if cluster is not None:
+        if cluster != '':
+            snakemake_vcftools_haploview_command_array.append('--cluster')
+            snakemake_vcftools_haploview_command_array.append("\""+str(cluster)+"\"")
+
+    # Construct snakemake command string from snakemake command array
+    snakemake_vcftools_haploview_command_string = str(' '.join(snakemake_vcftools_haploview_command_array))
+
+    print("\n\n{}\n".format(snakemake_vcftools_haploview_command_string))
+
+    # Split snakemake command string using shlex to prepare for subprocess
+    snakemake_vcftools_haploview_command = shlex.split(snakemake_vcftools_haploview_command_string)
+
+    try:
+        # Run snakemake command using subprocess
+        snakemake_vcftools_haploview_outcome = subprocess.run(
+            snakemake_vcftools_haploview_command,
+            capture_output=True,
+            check=True,
+            universal_newlines=True
+        )
+    except subprocess.CalledProcessError as e:
+        raise RuntimeError("\n\nOutput: \n{} \n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(e.output, e.stdout, e.stderr, e.cmd, e.returncode))
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
+    try:
+        with open(vcftools_haploview_output_folder.joinpath("Snakemake_VCFtools_Haploview.log"), 'w') as writer:
+            writer.write("\n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(snakemake_gapit_outcome.stdout, snakemake_gapit_outcome.stderr, snakemake_gapit_outcome.args, snakemake_gapit_outcome.returncode))
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    #######################################################################
+    # Parse arguments
+    #######################################################################
+    parser = argparse.ArgumentParser(prog='HAPPI_GWAS_2', description='HAPPI_GWAS_2')
+
+    parser.add_argument('-p', '--project_name', help='Project name', type=str, required=True)
+    parser.add_argument('-w', '--workflow_path', help='Workflow path', type=pathlib.Path, required=True)
+
+    parser.add_argument('-i', '--input_folder', help='Input folder', type=pathlib.Path, required=True)
+    parser.add_argument('-o', '--output_folder', help='Output folder', type=pathlib.Path, required=True)
+
+    parser.add_argument('-v', '--vcf_file', help='VCF file', type=pathlib.Path, required=True)
+
+    parser.add_argument('--genotype_hapmap', default='NULL', help='Genotype hapmap', type=str)
+    parser.add_argument('--genotype_data', default='NULL', help='Genotype data', type=str)
+    parser.add_argument('--genotype_map', default='NULL', help='Genotype map', type=str)
+
+    parser.add_argument('--kinship', default='NULL', type=str, help='Kinship matrix file')
+    parser.add_argument('--z_matrix', default='NULL', type=str, help='Z matrix file')
+    parser.add_argument('--corvariance_matrix', default='NULL', type=str, help='Corvariance matrix file')
+    parser.add_argument('--snp_maf', default=0.0, type=float, help='SNP minor allele frequency')
+    parser.add_argument('--model', default='MLM', type=str, help='Model')
+    parser.add_argument('--pca_total', default=0, type=int, help='Total PCA')
+
+    parser.add_argument('--memory', default=20, type=int, help='Memory')
+    parser.add_argument('--threads', default=4, type=int, help='Threads')
+
+    parser.add_argument('--jobs', default=2, type=int, help='Jobs')
+    parser.add_argument('--latency_wait', default=60, type=int, help='Latency wait')
+    parser.add_argument('--cluster', default='', type=str, help='Cluster parameters')
+
+    parser.add_argument('--p_value_filter', default=1.0, type=float, help='P-value filter')
+    parser.add_argument('--fdr_corrected_p_value_filter', default=1.0, type=float, help='FDR corrected p-value filter')
+    parser.add_argument('--ld_length', default=10000, type=int, help='LD length')
+
+    args = parser.parse_args()
+
+    #######################################################################
+    # Call main function
+    #######################################################################
+    main(args)
