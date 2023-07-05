@@ -21,7 +21,7 @@ regions = []
 with open(input_file, 'r') as reader:
 	for line in reader:
 		line = str(line).strip("\n").strip("\r").strip("\r\n")
-		line = re.sub(',', '__', line)
+		line = re.sub('\t', '__', line)
 		regions.append(line)
 
 

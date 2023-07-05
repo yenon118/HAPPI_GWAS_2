@@ -1,7 +1,10 @@
+#!/usr/bin/env python3
+
 import sys
 import os
 import re
 import json
+import gzip
 import pathlib
 import shlex
 import subprocess
@@ -241,6 +244,10 @@ def main(args):
     # Combine GAPIT results
     #######################################################################
 
+    #  Specify GAPIT results file and GAPIT result LD region file
+    gapit_gwas_result_file = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.txt")
+    gapit_gwas_result_ld_region_file = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".Unique_LD_Regions.txt")
+
     # Data save parameters
     header = True
     mode = 'w'
@@ -268,7 +275,7 @@ def main(args):
                     dat = dat[dat["P.value"] <= p_value_filter]
                     dat = dat[dat["H&B.P.Value"] <= fdr_corrected_p_value_filter]
                     # Write to one output file to append all data
-                    dat.to_csv(path_or_buf = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.csv"), mode = mode, header = header, index = False)
+                    dat.to_csv(path_or_buf = gapit_gwas_result_file, sep = '\t', mode = mode, header = header, index = False)
                     # Change parameters to make sure data append
                     if header:
                         header = False
@@ -290,7 +297,7 @@ def main(args):
     #######################################################################
 
     # Read GAPIT GWAS result file
-    dat = pd.read_csv(filepath_or_buffer = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.csv"))
+    dat = pd.read_table(filepath_or_buffer = gapit_gwas_result_file)
     # Query LD regions
     dat = dat[["Chr", "LD_start", "LD_end"]]
     # Sort by Chr, LD_start, and LD_end
@@ -298,7 +305,7 @@ def main(args):
     # Drop duplicates
     dat = dat.drop_duplicates()
     # Save unique LD regions (header is not included in the output file so that snakemake part is easier)
-    dat.to_csv(path_or_buf = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".Unique_LD_Regions.csv"), mode = 'w', header = False, index = False)
+    dat.to_csv(path_or_buf = gapit_gwas_result_ld_region_file, sep = '\t', mode = 'w', header = False, index = False)
 
     #######################################################################
     # Generate and save VCFtools_Haploview configuration file
@@ -306,7 +313,7 @@ def main(args):
     vcftools_haploview_config_data = {
         "project_name": project_name,
         "workflow_path": str(workflow_path),
-        "input_file": str(gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".Unique_LD_Regions.csv")),
+        "input_file": str(gapit_gwas_result_ld_region_file),
         "output_folder": str(vcftools_haploview_output_folder),
         "vcf_file": str(vcf_file),
         "memory": memory,
@@ -359,10 +366,134 @@ def main(args):
 
     try:
         with open(vcftools_haploview_output_folder.joinpath("Snakemake_VCFtools_Haploview.log"), 'w') as writer:
-            writer.write("\n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(snakemake_gapit_outcome.stdout, snakemake_gapit_outcome.stderr, snakemake_gapit_outcome.args, snakemake_gapit_outcome.returncode))
+            writer.write("\n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(snakemake_vcftools_haploview_outcome.stdout, snakemake_vcftools_haploview_outcome.stderr, snakemake_vcftools_haploview_outcome.args, snakemake_vcftools_haploview_outcome.returncode))
     except Exception as e:
         print(e)
         sys.exit(1)
+
+    #######################################################################
+    # Extract haploblock regions
+    #######################################################################
+
+    #Create haplotype blocks file and write header
+    haplotype_blocks_file = vcftools_haploview_output_folder.joinpath("Haplotype_blocks.txt")
+    with open(haplotype_blocks_file, 'w') as writer:
+        writer.write("Chromosome\tStart\tEnd\tHaploblock_start\tHaploblock_end\n")
+
+    # Find Haploview and VCFtools output folders
+    haploview_output_folder = vcftools_haploview_output_folder.joinpath("Haploview")
+    vcftools_output_folder = vcftools_haploview_output_folder.joinpath("VCFtools")
+
+    # Find all GABRIELblocks files
+    gabrielblocks_files = list(haploview_output_folder.glob("*.GABRIELblocks"))
+
+    # Loop through all GABRIELblocks files, extract chromosome, ld_start, and ld_end, and find corresponding recode VCF file
+    # Extract haploblock start and end based on indexes in GABRIELblocks file and positions in recode VCF file
+    for i in range(len(gabrielblocks_files)):
+        gabrielblocks_file = gabrielblocks_files[i]
+
+        # Extract file prefix from GABRIELblocks file name
+        file_prefix = re.sub('.GABRIELblocks', '', str(gabrielblocks_file.name))
+
+        # Extract chromosome, start, and end from GABRIELblocks file prefix
+        chrom_start_end = re.split('__', file_prefix)
+
+        chromsome = chrom_start_end[0]
+        ld_start = chrom_start_end[1]
+        ld_end = chrom_start_end[2]
+
+        # Create recode VCf file path
+        recode_vcf_file = vcftools_output_folder.joinpath(file_prefix+".recode.vcf.gz")
+
+        if recode_vcf_file.exists():
+            # Create recode VCF chromosome and position arrays
+            recode_vcf_chromosome_array = []
+            recode_vcf_position_array = []
+
+            # Read recode VCF file and collect chromosome and position data into arrays
+            if str(recode_vcf_file).endswith('gz'):
+                with gzip.open(recode_vcf_file, 'rt') as reader:
+                    header = ""
+                    while not header.strip().startswith("#CHROM"):
+                        header = reader.readline()
+                        header_array = str(header).strip("\n").strip("\r").strip("\r\n").split("\t")
+                    for line in reader:
+                        line_array = str(line).strip("\n").strip("\r").strip("\r\n").split("\t")
+                        recode_vcf_chromosome_array.append(line_array[0])
+                        recode_vcf_position_array.append(line_array[1])
+            else:
+                with open(recode_vcf_file, "r") as reader:
+                    header = ""
+                    while not header.strip().startswith("#CHROM"):
+                        header = reader.readline()
+                        header_array = str(header).strip("\n").strip("\r").strip("\r\n").split("\t")
+                    for line in reader:
+                        line_array = str(line).strip("\n").strip("\r").strip("\r\n").split("\t")
+                        recode_vcf_chromosome_array.append(line_array[0])
+                        recode_vcf_position_array.append(line_array[1])
+
+        # Create haploblock start and end arrays
+        haploblock_start_array = []
+        haploblock_end_array = []
+
+        # Read GABRIELblocks file and collect haploblock start and end data into arrays
+        with open(gabrielblocks_file, "r") as reader:
+            for line in reader:
+                if re.search("MARKERS", line) is not None:
+                    line = str(re.sub(".*MARKERS:", "", line)).strip("\n").strip("\r").strip("\r\n").strip(" ")
+                    line_array = re.split(" ", line)
+                    if len(line_array) > 1:
+                        haploblock_start_index = int(line_array[0])-1
+                        haploblock_end_index = int(line_array[(len(line_array)-1)])-1
+                        if (haploblock_start_index > -1) and (haploblock_end_index > -1) and (haploblock_start_index < haploblock_end_index):
+                            haploblock_start = recode_vcf_position_array[haploblock_start_index]
+                            haploblock_end = recode_vcf_position_array[haploblock_end_index]
+                            haploblock_start_array.append(haploblock_start)
+                            haploblock_end_array.append(haploblock_end)
+
+        # If haploblock start and end arrays are not empty, write haploblock data to file
+        if (len(haploblock_start_array) > 0) and (len(haploblock_end_array) > 0) and (len(haploblock_start_array) == len(haploblock_end_array)):
+            with open(haplotype_blocks_file, 'a') as writer:
+                for j in range(len(haploblock_start_array)):
+                    writer.write("{}\t{}\t{}\t{}\t{}\n".format(chromsome, ld_start, ld_end, haploblock_start_array[j], haploblock_end_array[j]))
+
+    #######################################################################
+    # Generate GWAS results file with haploblock data
+    #######################################################################
+
+    vcftools_haploview_gwas_result_file = vcftools_haploview_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.txt")
+
+    f_hdl = open(vcftools_haploview_gwas_result_file, "w")
+
+    # Read data in haplotype blocks file into array
+    haplotype_blocks_data_array = []
+    with(open(haplotype_blocks_file, "r")) as reader:
+        header = reader.readline()
+        header_array = str(header).strip("\n").strip("\r").strip("\r\n").split("\t")
+        for line in reader:
+            line_array = str(line).strip("\n").strip("\r").strip("\r\n").split("\t")
+            haplotype_blocks_data_array.append(line_array)
+
+    # Read GAPIT GWAS results file and add haploblock data
+    with(open(gapit_gwas_result_file, "r")) as reader:
+        header = reader.readline()
+        header = str(header).strip("\n").strip("\r").strip("\r\n") + "\tHaploblock_start\tHaploblock_end\n"
+        f_hdl.write(header)
+        for line in reader:
+            line = str(line).strip("\n").strip("\r").strip("\r\n")
+            line_array = line.split("\t")
+            found_haplotype_block = False
+            for i in range(len(haplotype_blocks_data_array)):
+                if (int(line_array[1]) == int(haplotype_blocks_data_array[i][0])) and (int(line_array[2]) >= int(haplotype_blocks_data_array[i][3])) and (int(line_array[2]) <= int(haplotype_blocks_data_array[i][4])):
+                    line = line + "\t" + str(haplotype_blocks_data_array[i][3]) + "\t" + str(haplotype_blocks_data_array[i][4]) + "\n"
+                    f_hdl.write(line)
+                    found_haplotype_block = True
+                    break
+            if not found_haplotype_block:
+                line = line + "\t\t\n"
+                f_hdl.write(line)
+
+    f_hdl.close()
 
 
 if __name__ == "__main__":
@@ -378,6 +509,10 @@ if __name__ == "__main__":
     parser.add_argument('-o', '--output_folder', help='Output folder', type=pathlib.Path, required=True)
 
     parser.add_argument('-v', '--vcf_file', help='VCF file', type=pathlib.Path, required=True)
+
+    # parser.add_argument('-g', '--gff_file', help='GFF file', type=pathlib.Path, required=True)
+    # parser.add_argument('-c', '--gff_category', help='Gff category', type=str, default='gene')
+    # parser.add_argument('-k', '--gff_key', help='Gff key', type=str, default='Name')
 
     parser.add_argument('--genotype_hapmap', default='NULL', help='Genotype hapmap', type=str)
     parser.add_argument('--genotype_data', default='NULL', help='Genotype data', type=str)
