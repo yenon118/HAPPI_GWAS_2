@@ -25,6 +25,10 @@ def main(args):
 
     vcf_file = args.vcf_file
 
+    gff_file = args.gff_file
+    gff_category = args.gff_category
+    gff_key = args.gff_key
+
     genotype_hapmap = args.genotype_hapmap
     genotype_data = args.genotype_data
     genotype_map = args.genotype_map
@@ -90,6 +94,17 @@ def main(args):
         sys.exit(1)
     if not vcf_file.exists():
         print('VCF file does not exist!!!')
+        sys.exit(1)
+
+    # GFF file checking
+    if gff_file is None:
+        print('GFF file is missing!!!')
+        sys.exit(1)
+    if gff_file == '':
+        print('GFF file is missing!!!')
+        sys.exit(1)
+    if not gff_file.exists():
+        print('GFF file does not exist!!!')
         sys.exit(1)
 
     # At-least-one arguments checking
@@ -461,10 +476,6 @@ def main(args):
     # Generate GWAS results file with haploblock data
     #######################################################################
 
-    vcftools_haploview_gwas_result_file = vcftools_haploview_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.txt")
-
-    f_hdl = open(vcftools_haploview_gwas_result_file, "w")
-
     # Read data in haplotype blocks file into array
     haplotype_blocks_data_array = []
     with(open(haplotype_blocks_file, "r")) as reader:
@@ -474,6 +485,11 @@ def main(args):
             line_array = str(line).strip("\n").strip("\r").strip("\r\n").split("\t")
             haplotype_blocks_data_array.append(line_array)
 
+    # Create GWAS results file with haploblock data
+    vcftools_haploview_gwas_result_file = vcftools_haploview_output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.txt")
+
+    f_hdl = open(vcftools_haploview_gwas_result_file, "w")
+
     # Read GAPIT GWAS results file and add haploblock data
     with(open(gapit_gwas_result_file, "r")) as reader:
         header = reader.readline()
@@ -482,16 +498,82 @@ def main(args):
         for line in reader:
             line = str(line).strip("\n").strip("\r").strip("\r\n")
             line_array = line.split("\t")
-            found_haplotype_block = False
+            haploblock_start = ""
+            haploblock_end = ""
             for i in range(len(haplotype_blocks_data_array)):
-                if (int(line_array[1]) == int(haplotype_blocks_data_array[i][0])) and (int(line_array[2]) >= int(haplotype_blocks_data_array[i][3])) and (int(line_array[2]) <= int(haplotype_blocks_data_array[i][4])):
-                    line = line + "\t" + str(haplotype_blocks_data_array[i][3]) + "\t" + str(haplotype_blocks_data_array[i][4]) + "\n"
-                    f_hdl.write(line)
-                    found_haplotype_block = True
-                    break
-            if not found_haplotype_block:
-                line = line + "\t\t\n"
-                f_hdl.write(line)
+                # Match chromosome
+                if (line_array[1] == haplotype_blocks_data_array[i][0]):
+                    # Check if marker position is within haplotyle block region
+                    if (int(haplotype_blocks_data_array[i][3]) <= int(line_array[2]) <= int(haplotype_blocks_data_array[i][4])):
+                        haploblock_start = haplotype_blocks_data_array[i][3]
+                        haploblock_end = haplotype_blocks_data_array[i][4]
+                        break
+            line = line + "\t" + str(haploblock_start) + "\t" + str(haploblock_end) + "\n"
+            f_hdl.write(line)
+
+    f_hdl.close()
+
+    #######################################################################
+    # Extract GFF regions that enclose haplotype blocks or markers
+    #######################################################################
+
+    # Load GFF file into data array
+    gff_data_array = []
+    with(open(gff_file, "r")) as reader:
+        for line in reader:
+            line = str(line).strip("\n").strip("\r").strip("\r\n")
+            if not line.startswith("#"):
+                line_array = line.split("\t")
+                if line_array[2] == gff_category:
+                    line_array[8] = str(re.sub(';.*', '', re.sub(fr'^.*?{gff_key}', '', line_array[8]))).strip("=").strip(":").strip(";").strip("_").strip("-")
+                    gff_data_array.append(line_array)
+
+    # Create GWAS results file with haploblock data and GFF regions
+    output_gwas_result_file = output_folder.joinpath("GAPIT.Association.GWAS_Results."+str(model)+".All.txt")
+
+    f_hdl = open(output_gwas_result_file, "w")
+
+    # Read GWAS results file and add GFF regions
+    with(open(vcftools_haploview_gwas_result_file, "r")) as reader:
+        header = reader.readline()
+        header = str(header).strip("\n").strip("\r").strip("\r\n") + "\tGene_start\tGene_end\tGene_ID\tOverlap_strategy\n"
+        f_hdl.write(header)
+        for line in reader:
+            line = str(line).strip("\n").strip("\r").strip("\r\n")
+            line_array = line.split("\t")
+            gene_start = ""
+            gene_end = ""
+            gene_id = ""
+            overlap_strategy = ""
+            for i in range(len(gff_data_array)):
+                # Match chromosome
+                if (line_array[1] == gff_data_array[i][0]):
+                    # Check if haplotype block region exists
+                    if (line_array[13] != '') and (line_array[14] != ''):
+                        if (int(gff_data_array[i][3]) <= int(line_array[13]) <= int(gff_data_array[i][4])) and (int(gff_data_array[i][3]) <= int(line_array[14]) <= int(gff_data_array[i][4])):
+                            gene_start = gff_data_array[i][3]
+                            gene_end = gff_data_array[i][4]
+                            gene_id = gff_data_array[i][8]
+                            overlap_strategy = "Full"
+                        elif (overlap_strategy != "Full") and (int(line_array[13]) < int(gff_data_array[i][3])) and (int(gff_data_array[i][3]) <= int(line_array[14]) <= int(gff_data_array[i][4])):
+                            gene_start = gff_data_array[i][3]
+                            gene_end = gff_data_array[i][4]
+                            gene_id = gff_data_array[i][8]
+                            overlap_strategy = "Partial"
+                        elif (overlap_strategy != "Full") and (int(gff_data_array[i][3]) <= int(line_array[13]) <= int(gff_data_array[i][4])) and  (int(line_array[14]) > int(gff_data_array[i][4])):
+                            gene_start = gff_data_array[i][3]
+                            gene_end = gff_data_array[i][4]
+                            gene_id = gff_data_array[i][8]
+                            overlap_strategy = "Partial"
+                    # Check if marker position is within GFF region
+                    if (overlap_strategy == "") and (int(gff_data_array[i][3]) <= int(line_array[2]) <= int(gff_data_array[i][4])):
+                        gene_start = gff_data_array[i][3]
+                        gene_end = gff_data_array[i][4]
+                        gene_id = gff_data_array[i][8]
+                        overlap_strategy = "Marker"
+
+            line = line + "\t" + str(gene_start) + "\t" + str(gene_end) + "\t" + str(gene_id) + "\t" + str(overlap_strategy) + "\n"
+            f_hdl.write(line)
 
     f_hdl.close()
 
@@ -510,9 +592,9 @@ if __name__ == "__main__":
 
     parser.add_argument('-v', '--vcf_file', help='VCF file', type=pathlib.Path, required=True)
 
-    # parser.add_argument('-g', '--gff_file', help='GFF file', type=pathlib.Path, required=True)
-    # parser.add_argument('-c', '--gff_category', help='Gff category', type=str, default='gene')
-    # parser.add_argument('-k', '--gff_key', help='Gff key', type=str, default='Name')
+    parser.add_argument('-g', '--gff_file', help='GFF file', type=pathlib.Path, required=True)
+    parser.add_argument('--gff_category', help='GFF category', type=str, default='gene')
+    parser.add_argument('--gff_key', help='GFF key', type=str, default='ID')
 
     parser.add_argument('--genotype_hapmap', default='NULL', help='Genotype hapmap', type=str)
     parser.add_argument('--genotype_data', default='NULL', help='Genotype data', type=str)
