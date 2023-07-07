@@ -22,6 +22,7 @@ snp_maf = config['snp_maf']
 model = config['model']
 pca_total = config['pca_total']
 
+ulimit = config['ulimit']
 memory = config['memory']
 threads = config['threads']
 
@@ -49,6 +50,7 @@ print("snp_maf: ", snp_maf)
 print("model: ", model)
 print("pca_total: ", pca_total)
 
+print("ulimit: ", ulimit)
 print("memory: ", memory)
 print("threads: ", threads)
 
@@ -75,7 +77,8 @@ rule r_gapit:
 		snp_maf = snp_maf,
 		model = model,
 		pca_total = pca_total,
-		out_folder = os.path.abspath(output_folder)
+		out_folder = os.path.abspath(output_folder),
+		ulimit = ulimit
 	output:
 		out_file = os.path.join(os.path.abspath(output_folder), "GAPIT_log", '{sample}.log')
 	resources:

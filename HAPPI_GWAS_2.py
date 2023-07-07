@@ -41,9 +41,11 @@ def main(args):
     model = args.model
     pca_total = args.pca_total
 
+    ulimit = args.ulimit
     memory = args.memory
     threads = args.threads
 
+    keep_going = args.keep_going
     jobs = args.jobs
     latency_wait = args.latency_wait
     cluster = args.cluster
@@ -200,6 +202,7 @@ def main(args):
         "snp_maf": snp_maf,
         "model": model,
         "pca_total": pca_total,
+        "ulimit": ulimit,
         "memory": memory,
         "threads": threads
     }
@@ -216,10 +219,14 @@ def main(args):
         "snakemake",
         '--jobs', str(jobs),
         '--latency-wait', str(latency_wait),
-        '-p',
+        '--printshellcmds',
         '--snakefile', str(workflow_path.joinpath('rules', 'r_gapit.smk')),
         '--configfile', str(gapit_output_folder.joinpath('Snakemake_GAPIT_config.json'))
     ]
+
+    if keep_going is not None:
+        if keep_going:
+            snakemake_gapit_command_array.append('--keep-going')
 
     if cluster is not None:
         if cluster != '':
@@ -331,6 +338,7 @@ def main(args):
         "input_file": str(gapit_gwas_result_ld_region_file),
         "output_folder": str(vcftools_haploview_output_folder),
         "vcf_file": str(vcf_file),
+        "ulimit": ulimit,
         "memory": memory,
         "threads": threads
     }
@@ -347,10 +355,14 @@ def main(args):
         "snakemake",
         '--jobs', str(jobs),
         '--latency-wait', str(latency_wait),
-        '-p',
+        '--printshellcmds',
         '--snakefile', str(workflow_path.joinpath('rules', 'vcftools_haploview.smk')),
         '--configfile', str(vcftools_haploview_output_folder.joinpath('Snakemake_VCFtools_Haploview_config.json'))
     ]
+
+    if keep_going is not None:
+        if keep_going:
+            snakemake_vcftools_haploview_command_array.append('--keep-going')
 
     if cluster is not None:
         if cluster != '':
@@ -607,11 +619,13 @@ if __name__ == "__main__":
     parser.add_argument('--model', default='MLM', type=str, help='Model')
     parser.add_argument('--pca_total', default=0, type=int, help='Total PCA')
 
+    parser.add_argument('--ulimit', default=10240, type=int, help='Ulimit')
     parser.add_argument('--memory', default=20, type=int, help='Memory')
     parser.add_argument('--threads', default=4, type=int, help='Threads')
 
+    parser.add_argument('--keep_going', action='store_true', help='Keep going')
     parser.add_argument('--jobs', default=2, type=int, help='Jobs')
-    parser.add_argument('--latency_wait', default=60, type=int, help='Latency wait')
+    parser.add_argument('--latency_wait', default=180, type=int, help='Latency wait')
     parser.add_argument('--cluster', default='', type=str, help='Cluster parameters')
 
     parser.add_argument('--p_value_filter', default=1.0, type=float, help='P-value filter')

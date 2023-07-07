@@ -12,6 +12,7 @@ output_folder = config['output_folder']
 
 vcf_file = config['vcf_file']
 
+ulimit = config['ulimit']
 memory = config['memory']
 threads = config['threads']
 
@@ -34,6 +35,7 @@ print("output_folder: ", output_folder)
 
 print("vcf_file: ", vcf_file)
 
+print("ulimit: ", ulimit)
 print("memory: ", memory)
 print("threads: ", threads)
 
@@ -55,7 +57,8 @@ rule vcftools_subset_and_convert_to_plink:
 		in_file = vcf_file,
 		chrom_start_end = lambda wildcards: wildcards.region.split("__"),
 		output_prefix = os.path.join(os.path.abspath(output_folder), "VCFtools", '{region}'),
-		out_folder = os.path.join(os.path.abspath(output_folder), "VCFtools")
+		out_folder = os.path.join(os.path.abspath(output_folder), "VCFtools"),
+		ulimit = ulimit
 	output:
 		recode_vcf_file = os.path.join(os.path.abspath(output_folder), "VCFtools", '{region}.recode.vcf.gz'),
 		ped_file = os.path.join(os.path.abspath(output_folder), "VCFtools", '{region}.ped'),
@@ -65,6 +68,7 @@ rule vcftools_subset_and_convert_to_plink:
 		threads = threads
 	shell:
 		"""
+		ulimit -Sn {params.ulimit};
 		mkdir -p {params.out_folder};
 		vcftools --gzvcf {params.in_file} --chr {params.chrom_start_end[0]} --from-bp {params.chrom_start_end[1]} --to-bp {params.chrom_start_end[2]} --recode --stdout | bgzip > {output.recode_vcf_file};
 		vcftools --gzvcf {output.recode_vcf_file} --plink --out {params.output_prefix};
@@ -76,7 +80,8 @@ rule haploview:
 		map_file = os.path.join(os.path.abspath(output_folder), "VCFtools", '{region}.map')
 	params:
 		output_prefix = os.path.join(os.path.abspath(output_folder), "Haploview", '{region}'),
-		out_folder = os.path.join(os.path.abspath(output_folder), "Haploview")
+		out_folder = os.path.join(os.path.abspath(output_folder), "Haploview"),
+		ulimit = ulimit
 	output:
 		ld_file = os.path.join(os.path.abspath(output_folder), "Haploview", '{region}.LD')
 	resources:

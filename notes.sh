@@ -1,4 +1,14 @@
 
+Rscript BLUP.R -i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis360_example_data/original_data/05_22_2019_Arabidopsis_360_BCAA_raw.csv \
+-o /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/output/BLUP_Arabidopsis360 \
+-e 1,2
+
+
+Rscript BLUE.R -i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis360_example_data/original_data/05_22_2019_Arabidopsis_360_BCAA_raw.csv \
+-o /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/output/BLUE_Arabidopsis360 \
+-e 1,2
+
+
 Rscript GAPIT.R \
 -i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Maize_example_data/raw_data/mdp_traits.txt \
 -o /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/output/HAPPI_GWAS_GLM/GAPIT/GLM \
@@ -63,3 +73,18 @@ java -jar tools/Haploview.jar \
 -pedfile output/HAPPI_GWAS_MLMM/VCFtools_Haploview/VCFtools/9__11331274__11351274.ped \
 -map output/HAPPI_GWAS_MLMM/VCFtools_Haploview/VCFtools/9__11331274__11351274.map \
 -skipcheck -dprime -png -ldcolorscheme DEFAULT -ldvalues DPRIME -blockoutput GAB -minMAF 0.05
+
+
+python3 HAPPI_GWAS_2.py \
+-p Test \
+-w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
+-i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/raw_data_split \
+-o /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/output/HAPPI_GWAS_MLMM_Arabidopsis1001_Chr1 \
+-v /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/vcf/Arabidopsis1135_1.vcf.gz \
+-g /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/gff/Athaliana_TAIR10.gff3 \
+--genotype_hapmap /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/genotype_hapmap/Chr1.hmp.txt \
+--model MLMM \
+--p_value_filter 0.01 \
+--memory 90 \
+--jobs 10 \
+--cluster "sbatch --account=xulab --cpus-per-task=3 --time=1-21:00 --partition=Lewis,BioCompute,hpc5,General --mem-per-cpu=33G"

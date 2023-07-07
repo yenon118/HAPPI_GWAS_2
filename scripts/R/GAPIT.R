@@ -54,7 +54,7 @@ if (is.null(input_file) | identical(input_file, character(0))) {
     quit(status=0)
 }
 
-# Check output file
+# Check output path
 output_path <- tryCatch({file.path(args$output_path)}, error = function(e) {return(NULL)})
 
 if (is.null(output_path) | identical(output_path, character(0))) {
@@ -87,17 +87,32 @@ PCA.total <- args$pca_total
 
 if (!is.null(input_file)) {
     if (input_file != "NULL") {
-        Y <- tryCatch({
-            read.table(
-                file = input_file,
-                header = TRUE,
-                check.names = FALSE,
-                stringsAsFactors = FALSE
-            )
-        }, error = function(e) {
-            print("Input file cannot be read!!!")
-            quit(status=0)
-        })
+        if (endsWith(input_file, "csv")) {
+            Y <- tryCatch({
+                read.csv(
+                    file = input_file,
+                    header = TRUE,
+                    check.names = FALSE,
+                    stringsAsFactors = FALSE
+                )
+            }, error = function(e) {
+                print("Input file cannot be read!!!")
+                quit(status=0)
+            })
+        } else {
+            Y <- tryCatch({
+                read.table(
+                    file = input_file,
+                    sep = "\t",
+                    header = TRUE,
+                    check.names = FALSE,
+                    stringsAsFactors = FALSE
+                )
+            }, error = function(e) {
+                print("Input file cannot be read!!!")
+                quit(status=0)
+            })
+        }
     } else {
         print("Input file (Y) is set to NULL!!!")
         quit(status=0)
@@ -154,7 +169,9 @@ if (!is.null(G)) {
         G <- tryCatch({
             read.table(
                 file = G,
+                sep = "\t",
                 header = FALSE,
+                comment.char = "",
                 check.names = FALSE,
                 stringsAsFactors = FALSE
             )
@@ -182,6 +199,7 @@ if (!is.null(GD)) {
         GD <- tryCatch({
             read.table(
                 file = GD,
+                sep = "\t",
                 header = TRUE,
                 check.names = FALSE,
                 stringsAsFactors = FALSE
@@ -210,6 +228,7 @@ if (!is.null(GM)) {
         GM <- tryCatch({
             read.table(
                 file = GM,
+                sep = "\t",
                 header = TRUE,
                 check.names = FALSE,
                 stringsAsFactors = FALSE
@@ -249,6 +268,7 @@ if (!is.null(KI)) {
         KI <- tryCatch({
             read.table(
                 file = KI,
+                sep = "\t",
                 header = TRUE,
                 check.names = FALSE,
                 stringsAsFactors = FALSE
@@ -277,6 +297,7 @@ if (!is.null(Z)) {
         Z <- tryCatch({
             read.table(
                 file = Z,
+                sep = "\t",
                 header = TRUE,
                 check.names = FALSE,
                 stringsAsFactors = FALSE
@@ -305,6 +326,7 @@ if (!is.null(CV)) {
         CV <- tryCatch({
             read.table(
                 file = CV,
+                sep = "\t",
                 header = TRUE,
                 row.names = 1,
                 check.names = FALSE,
