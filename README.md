@@ -8,7 +8,10 @@ The HAPPI_GWAS_2 is a pipeline built for genome-wide association study (GWAS).
 ## Requirements
 
 In order to run the HAPPI_GWAS_2, users need to install Miniconda and prepare the Miniconda environment in their computing systems.   
+
 Miniconda can be downloaded from [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html).   
+
+To create a Conda environment:
 
 ```
 conda create -n happigwas openjdk=8.0.192 vcftools htslib snakemake r-devtools r-biocmanager r-argparse r-dplyr r-tidyr r-tibble r-stringr r-ggplot2 \   
@@ -96,6 +99,8 @@ These are a few basic examples which show you how to use the HAPPI_GWAS_2:
 ```
 cd /path/to/HAPPI_GWAS_2
 
+conda activate happigwas
+
 python3 HAPPI_GWAS_2.py \
 -p Test \
 -w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
@@ -109,6 +114,8 @@ python3 HAPPI_GWAS_2.py \
 
 ```
 cd /path/to/HAPPI_GWAS_2
+
+conda activate happigwas
 
 python3 HAPPI_GWAS_2.py \
 -p Test \
@@ -124,6 +131,8 @@ python3 HAPPI_GWAS_2.py \
 
 ```
 cd /path/to/HAPPI_GWAS_2
+
+conda activate happigwas
 
 python3 HAPPI_GWAS_2.py \
 -p Test \
