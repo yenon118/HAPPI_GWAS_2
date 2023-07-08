@@ -17,7 +17,17 @@ Rscript GAPIT.R \
 --model GLM
 
 
-python3 HAPPI_GWAS_2.py \
+python BLUP.py -p Test -w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
+-i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis360_example_data/original_data_split \
+-o /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/output/BLUP_Arabidopsis360
+
+
+python BLUE.py -p Test -w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
+-i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis360_example_data/original_data_split \
+-o /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/output/BLUE_Arabidopsis360
+
+
+python3 HAPPI_GWAS.py \
 -p Test \
 -w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
 -i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
@@ -28,7 +38,7 @@ python3 HAPPI_GWAS_2.py \
 --p_value_filter 0.01
 
 
-python3 HAPPI_GWAS_2.py \
+python3 HAPPI_GWAS.py \
 -p Test \
 -w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
 -i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
@@ -41,7 +51,7 @@ python3 HAPPI_GWAS_2.py \
 --cluster "sbatch --account=xulab --cpus-per-task=3 --time=0-02:00 --partition=Lewis,BioCompute,hpc5,General --mem=64G"
 
 
-python3 HAPPI_GWAS_2.py \
+python3 HAPPI_GWAS.py \
 -p Test \
 -w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
 -i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
@@ -75,7 +85,7 @@ java -jar tools/Haploview.jar \
 -skipcheck -dprime -png -ldcolorscheme DEFAULT -ldvalues DPRIME -blockoutput GAB -minMAF 0.05
 
 
-python3 HAPPI_GWAS_2.py \
+python3 HAPPI_GWAS.py \
 -p Test \
 -w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
 -i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/raw_data_split \

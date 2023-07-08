@@ -313,7 +313,6 @@ def main(args):
         print("Output folder does not exists!!!")
         sys.exit(1)
 
-
     #######################################################################
     # Query LD regions and drop duplicates
     #######################################################################
@@ -594,7 +593,7 @@ if __name__ == "__main__":
     #######################################################################
     # Parse arguments
     #######################################################################
-    parser = argparse.ArgumentParser(prog='HAPPI_GWAS_2', description='HAPPI_GWAS_2')
+    parser = argparse.ArgumentParser(prog='HAPPI_GWAS', description='HAPPI_GWAS')
 
     parser.add_argument('-p', '--project_name', help='Project name', type=str, required=True)
     parser.add_argument('-w', '--workflow_path', help='Workflow path', type=pathlib.Path, required=True)

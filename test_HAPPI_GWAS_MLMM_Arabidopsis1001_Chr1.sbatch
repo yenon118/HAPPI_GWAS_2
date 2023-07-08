@@ -15,7 +15,7 @@ cd $(pwd)
 source activate happigwas
 
 
-python3 HAPPI_GWAS_2.py \
+python3 HAPPI_GWAS.py \
 -p Test \
 -w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
 -i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/raw_data_split \
