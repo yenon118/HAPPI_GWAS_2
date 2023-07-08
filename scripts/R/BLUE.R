@@ -268,6 +268,9 @@ for(i in target_column_indexes){
 	blue_model_out_dat <- as.data.frame(blue_model_out, check.names=FALSE, stringsAsFactors=FALSE)
 	colnames(blue_model_out_dat) <- colnames(dat)[i]
 	blue_model_out_dat <- tibble::rownames_to_column(blue_model_out_dat, var = "Accession")
+	blue_model_out_dat[,1] <- sub(colnames(dat)[feature_column_indexes[1]], "", blue_model_out_dat[,1])
+	existing_original_accessions <- unique(sort(dat[!is.na(dat[[i]]),colnames(dat)[feature_column_indexes[1]]]))
+	blue_model_out_dat[1,1] <- existing_original_accessions[!(existing_original_accessions %in% blue_model_out_dat[,1])][1]
 
 	# Merge BLUE data
 	if (is.null(blue_dat)) {
@@ -280,10 +283,6 @@ for(i in target_column_indexes){
 # Sort BLUE data
 blue_dat <- arrange(blue_dat, Accession)
 blue_dat <- as.data.frame(blue_dat, check.names=FALSE, stringsAsFactors=FALSE)
-
-# Clean up accession names and solve intercept
-blue_dat[,1] <- sub(colnames(dat)[feature_column_indexes[1]], "", blue_dat[,1])
-blue_dat[1,1] <- dat[,feature_column_indexes[1]][!(dat[,feature_column_indexes[1]] %in% blue_dat[,1])][1]
 
 
 ##################################################
