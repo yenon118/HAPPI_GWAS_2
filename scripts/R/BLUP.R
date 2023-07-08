@@ -171,11 +171,14 @@ for (i in target_column_indexes){
 	H <- hatvalues(lme)
 	sigma <- summary(lme)$sigm
 	sres <- as.numeric(res/(sigma*sqrt(1-H)))
-	sres[!is.finite(sres)] <- NA
+
+	# Generate outlier flags
+	flags <- (abs(sres) >= threshold)
+	flags[is.na(flags)] <- FALSE
 
 	# Generate outlier removed dataset and outlier dataset
-	outlier_removed_dat[(abs(sres) >= threshold) | is.na(sres),i] <- NA
-	outlier_dat[(abs(sres) < threshold) & (!is.na(sres)),i] <- NA
+	outlier_removed_dat[flags,i] <- NA
+	outlier_dat[!flags,i] <- NA
 }
 
 # Update data
