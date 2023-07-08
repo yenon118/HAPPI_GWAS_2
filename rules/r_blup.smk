@@ -55,9 +55,9 @@ rule r_blup:
 		out_file = os.path.join(os.path.abspath(output_folder), '{sample}_BLUP.txt')
 	log:
 		os.path.join(os.path.abspath(output_folder), '{sample}.log')
+	threads: threads
 	resources:
-		memory = memory,
-		threads = threads
+		memory = memory
 	shell:
 		"""
 		mkdir -p {params.out_folder};

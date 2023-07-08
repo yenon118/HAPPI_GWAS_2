@@ -55,9 +55,9 @@ rule r_blue:
 		out_file = os.path.join(os.path.abspath(output_folder), '{sample}_BLUE.txt')
 	log:
 		os.path.join(os.path.abspath(output_folder), '{sample}.log')
+	threads: threads
 	resources:
-		memory = memory,
-		threads = threads
+		memory = memory
 	shell:
 		"""
 		mkdir -p {params.out_folder};

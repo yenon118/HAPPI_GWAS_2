@@ -63,9 +63,9 @@ rule vcftools_subset_and_convert_to_plink:
 		recode_vcf_file = os.path.join(os.path.abspath(output_folder), "VCFtools", '{region}.recode.vcf.gz'),
 		ped_file = os.path.join(os.path.abspath(output_folder), "VCFtools", '{region}.ped'),
 		map_file = os.path.join(os.path.abspath(output_folder), "VCFtools", '{region}.map')
+	threads: threads
 	resources:
-		memory = memory,
-		threads = threads
+		memory = memory
 	shell:
 		"""
 		ulimit -Sn {params.ulimit};
@@ -84,9 +84,9 @@ rule haploview:
 		ulimit = ulimit
 	output:
 		ld_file = os.path.join(os.path.abspath(output_folder), "Haploview", '{region}.LD')
+	threads: threads
 	resources:
-		memory = memory,
-		threads = threads
+		memory = memory
 	shell:
 		"""
 		mkdir -p {params.out_folder};

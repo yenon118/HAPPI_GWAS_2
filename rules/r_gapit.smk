@@ -81,9 +81,9 @@ rule r_gapit:
 		ulimit = ulimit
 	output:
 		out_file = os.path.join(os.path.abspath(output_folder), "GAPIT_log", '{sample}.log')
+	threads: threads
 	resources:
-		memory = memory,
-		threads = threads
+		memory = memory
 	shell:
 		"""
 		mkdir -p {params.out_folder};
