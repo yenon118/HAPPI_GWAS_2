@@ -94,7 +94,7 @@ python3 HAPPI_GWAS.py \
 -g /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/gff/Athaliana_TAIR10.gff3 \
 --genotype_hapmap /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/genotype_hapmap/Chr1.hmp.txt \
 --model MLMM \
---p_value_filter 0.01 \
+--p_value_filter 1e-5 \
 --memory 90 \
 --jobs 10 \
 --cluster "sbatch --account=xulab --nodes=1 --ntasks=1 --cpus-per-task=3 --time=1-21:00 --partition=Lewis,BioCompute,hpc5,General --mem=100G"

@@ -4,7 +4,7 @@
 #SBATCH --partition=Lewis,BioCompute,hpc5,General
 #SBATCH --time=1-21:00
 #SBATCH --cpus-per-task=3
-#SBATCH --mem-per-cpu=33G
+#SBATCH --mem=100G
 #SBATCH --job-name=2023_07_06_run_HAPPI_GWAS_MLMM_Arabidopsis1001_Chr2
 #SBATCH --output=log_2023_07_06_run_HAPPI_GWAS_MLMM_Arabidopsis1001_Chr2_%A-%a.out
 
