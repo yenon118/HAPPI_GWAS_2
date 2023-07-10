@@ -97,4 +97,4 @@ python3 HAPPI_GWAS.py \
 --p_value_filter 0.01 \
 --memory 90 \
 --jobs 10 \
---cluster "sbatch --account=xulab --cpus-per-task=3 --time=1-21:00 --partition=Lewis,BioCompute,hpc5,General --mem-per-cpu=33G"
+--cluster "sbatch --account=xulab --nodes=1 --ntasks=1 --cpus-per-task=3 --time=1-21:00 --partition=Lewis,BioCompute,hpc5,General --mem=100G"

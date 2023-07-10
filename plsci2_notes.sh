@@ -42,3 +42,19 @@ python3 HAPPI_GWAS.py \
 --genotype_hapmap /scratch/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap/mdp_genotype_test.hmp.txt \
 --model FarmCPU \
 --p_value_filter 0.01
+
+
+python3 HAPPI_GWAS.py \
+-p Test \
+-w /scratch/yenc/projects/HAPPI_GWAS_2 \
+-i /scratch/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/raw_data_split \
+-o /scratch/yenc/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLMM_Arabidopsis1001_Chr1 \
+-v /scratch/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/vcf/Arabidopsis1135_1.vcf.gz \
+-g /scratch/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/gff/Athaliana_TAIR10.gff3 \
+--genotype_hapmap /scratch/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/genotype_hapmap/Chr1.hmp.txt \
+--model MLMM \
+--p_value_filter 1e-5 \
+--memory 90 \
+--keep_going \
+--jobs 20 \
+--latency_wait 300
