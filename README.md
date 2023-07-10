@@ -13,13 +13,58 @@ Miniconda can be downloaded from [https://docs.conda.io/en/latest/miniconda.html
 
 Installation of the Miniconda is required, and Miniconda environment needs to be activated every time before running the HAPPI_GWAS_2 pipeline.
 
-To create a Conda environment:
+Write a Conda configuration file (.condarc) before creating a Conda environment:
+
+```
+nano ~/.condarc
+```
+
+Put the following text into the Conda configuration file (make sure you change *envs_dirs* and *pkgs_dirs*) then save the file:
+
+```
+envs_dirs:
+  - /new/path/to/miniconda/envs
+pkgs_dirs:
+  - /new/path/to/miniconda/pkgs
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+```
+
+Create a Conda environment named *happigwas*:
 
 ```
 conda create -n happigwas openjdk=8.0.192 vcftools htslib snakemake r-devtools r-biocmanager r-argparse r-dplyr r-tidyr r-tibble r-stringr r-ggplot2 \
 r-bh r-mvtnorm r-viridislite r-stringi r-rcpp r-uuid r-nlme r-digest r-matrix r-ape r-bigmemory r-emmreml r-genetics \
 r-gplots r-htmltools r-lattice r-magrittr r-lme4 r-mass bioconductor-multtest r-plotly r-rcpparmadillo r-rgl r-gridextra \
 r-scatterplot3d r-snowfall bioconductor-snpstats r-biganalytics r-biglm r-car r-foreach r-doparallel
+```
+
+Activate *happigwas* Conda environment:
+
+```
+conda activate happigwas
+```
+
+Start R in terminal:
+
+```
+R
+```
+
+Install required R packages:
+
+```
+devtools::install_github('christophergandrud/DataCombine')
+devtools::install_github("SFUStatgen/LDheatmap", force=TRUE)
+devtools::install_github("jiabowang/GAPIT", force=TRUE)
+```
+
+Quit R:
+
+```
+q()
 ```
 
 ## Installation
