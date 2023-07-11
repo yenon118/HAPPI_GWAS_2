@@ -23,13 +23,13 @@ Put the following text into the Conda configuration file (make sure you change *
 
 ```
 envs_dirs:
-  - /new/path/to/miniconda/envs
+	- /new/path/to/miniconda/envs
 pkgs_dirs:
-  - /new/path/to/miniconda/pkgs
+	- /new/path/to/miniconda/pkgs
 channels:
-  - bioconda
-  - conda-forge
-  - defaults
+	- bioconda
+	- conda-forge
+	- defaults
 ```
 
 Create a Conda environment named *happigwas*:
@@ -86,122 +86,122 @@ The HAPPI_GWAS_2 pipeline is a command line based pipeline that can be ran on an
 
 ```
 usage: python BLUP.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER [-e FEATURE_COLUMN_INDEXES]
-      [--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-      [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+						[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+						[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
-            Project name
+                        Project name
   -w WORKFLOW_PATH, --workflow_path WORKFLOW_PATH
-            Workflow path
+                        Workflow path
   -i INPUT_FOLDER, --input_folder INPUT_FOLDER
-            Input folder
+                        Input folder
   -o OUTPUT_FOLDER, --output_folder OUTPUT_FOLDER
-            Output folder
+                        Output folder
 
 optional arguments:
   -h, --help            show this help message and exit
   -e FEATURE_COLUMN_INDEXES, --feature_column_indexes FEATURE_COLUMN_INDEXES
-            Feature column indexes
+                        Feature column indexes
   --ulimit ULIMIT       Ulimit
   --memory MEMORY       Memory
   --threads THREADS     Threads
   --keep_going          Keep going
   --jobs JOBS           Jobs
   --latency_wait LATENCY_WAIT
-            Latency wait
+                        Latency wait
   --cluster CLUSTER     Cluster parameters
 ```
 
 #### BLUE.py
 
 ```
-usage: BLUE [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER [-e FEATURE_COLUMN_INDEXES]
-      [--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-      [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+usage: python BLUE.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER [-e FEATURE_COLUMN_INDEXES]
+						[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+						[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
-            Project name
+                        Project name
   -w WORKFLOW_PATH, --workflow_path WORKFLOW_PATH
-            Workflow path
+                        Workflow path
   -i INPUT_FOLDER, --input_folder INPUT_FOLDER
-            Input folder
+                        Input folder
   -o OUTPUT_FOLDER, --output_folder OUTPUT_FOLDER
-            Output folder
+                        Output folder
 
 optional arguments:
   -h, --help            show this help message and exit
   -e FEATURE_COLUMN_INDEXES, --feature_column_indexes FEATURE_COLUMN_INDEXES
-            Feature column indexes
+                        Feature column indexes
   --ulimit ULIMIT       Ulimit
   --memory MEMORY       Memory
   --threads THREADS     Threads
   --keep_going          Keep going
   --jobs JOBS           Jobs
   --latency_wait LATENCY_WAIT
-            Latency wait
+                        Latency wait
   --cluster CLUSTER     Cluster parameters
 ```
 
 #### HAPPI_GWAS.py
 
 ```
-usage: python HAPPI_GWAS.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER -v VCF_FILE -g GFF_FILE [--gff_category GFF_CATEGORY] [--gff_key GFF_KEY]
-          [--genotype_hapmap GENOTYPE_HAPMAP] [--genotype_data GENOTYPE_DATA] [--genotype_map GENOTYPE_MAP]
-          [--kinship KINSHIP] [--z_matrix Z_MATRIX] [--corvariance_matrix CORVARIANCE_MATRIX]
-          [--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL]
-          [--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-          [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
-          [--p_value_filter P_VALUE_FILTER] [--fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER] [--ld_length LD_LENGTH]
+usage: python3 HAPPI_GWAS.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER -v VCF_FILE -g GFF_FILE [--gff_category GFF_CATEGORY] [--gff_key GFF_KEY]
+								[--genotype_hapmap GENOTYPE_HAPMAP] [--genotype_data GENOTYPE_DATA] [--genotype_map GENOTYPE_MAP]
+								[--kinship KINSHIP] [--z_matrix Z_MATRIX] [--corvariance_matrix CORVARIANCE_MATRIX]
+								[--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL]
+								[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+								[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+								[--p_value_filter P_VALUE_FILTER] [--fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER] [--ld_length LD_LENGTH]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
-            Project name
+                        Project name
   -w WORKFLOW_PATH, --workflow_path WORKFLOW_PATH
-            Workflow path
+                        Workflow path
   -i INPUT_FOLDER, --input_folder INPUT_FOLDER
-            Input folder
+                        Input folder
   -o OUTPUT_FOLDER, --output_folder OUTPUT_FOLDER
-            Output folder
+                        Output folder
   -v VCF_FILE, --vcf_file VCF_FILE
-            VCF file
+                        VCF file
   -g GFF_FILE, --gff_file GFF_FILE
-            GFF file
+                        GFF file
 
 optional arguments:
   -h, --help            show this help message and exit
   --gff_category GFF_CATEGORY
-            GFF category
+                        GFF category
   --gff_key GFF_KEY     GFF key
   --genotype_hapmap GENOTYPE_HAPMAP
-            Genotype hapmap
+                        Genotype hapmap
   --genotype_data GENOTYPE_DATA
-            Genotype data
+                        Genotype data
   --genotype_map GENOTYPE_MAP
-            Genotype map
+                        Genotype map
   --kinship KINSHIP     Kinship matrix file
   --z_matrix Z_MATRIX   Z matrix file
   --corvariance_matrix CORVARIANCE_MATRIX
-            Corvariance matrix file
+                        Corvariance matrix file
   --snp_maf SNP_MAF     SNP minor allele frequency
   --model MODEL         Model
   --pca_total PCA_TOTAL
-            Total PCA
+                        Total PCA
   --ulimit ULIMIT       Ulimit
   --memory MEMORY       Memory
   --threads THREADS     Threads
   --keep_going          Keep going
   --jobs JOBS           Jobs
   --latency_wait LATENCY_WAIT
-            Latency wait
+                        Latency wait
   --cluster CLUSTER     Cluster parameters
   --p_value_filter P_VALUE_FILTER
-            P-value filter
+                        P-value filter
   --fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER
-            FDR corrected p-value filter
+                        FDR corrected p-value filter
   --ld_length LD_LENGTH
-            LD length
+                        LD length
 ```
 
 ## Examples
