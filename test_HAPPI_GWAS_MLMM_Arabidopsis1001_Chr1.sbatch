@@ -17,12 +17,12 @@ source activate happigwas
 
 python3 HAPPI_GWAS.py \
 -p Test \
--w /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2 \
--i /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/raw_data_split \
--o /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/output/HAPPI_GWAS_MLMM_Arabidopsis1001_Chr1 \
--v /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/vcf/Arabidopsis1135_1.vcf.gz \
--g /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/gff/Athaliana_TAIR10.gff3 \
---genotype_hapmap /storage/htc/joshilab/yenc/projects/2022_07_22_RuthieAngelovici/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/genotype_hapmap/Chr1.hmp.txt \
+-w /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2 \
+-i /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/raw_data_split \
+-o /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLMM_Arabidopsis1001_Chr1 \
+-v /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/vcf/Arabidopsis1135_1.vcf.gz \
+-g /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/gff/Athaliana_TAIR10.gff3 \
+--genotype_hapmap /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis1001_example_data/genotype_hapmap/Chr1.hmp.txt \
 --model MLMM \
 --p_value_filter 1e-5 \
 --memory 90 \
