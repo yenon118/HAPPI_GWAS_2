@@ -86,8 +86,8 @@ The HAPPI_GWAS_2 pipeline is a command line based pipeline that can be ran on an
 
 ```
 usage: python BLUP.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER [-e FEATURE_COLUMN_INDEXES]
-						[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-						[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+			[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+			[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
@@ -117,8 +117,8 @@ optional arguments:
 
 ```
 usage: python BLUE.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER [-e FEATURE_COLUMN_INDEXES]
-						[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-						[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+			[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+			[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
@@ -148,12 +148,12 @@ optional arguments:
 
 ```
 usage: python3 HAPPI_GWAS.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER -v VCF_FILE -g GFF_FILE [--gff_category GFF_CATEGORY] [--gff_key GFF_KEY]
-								[--genotype_hapmap GENOTYPE_HAPMAP] [--genotype_data GENOTYPE_DATA] [--genotype_map GENOTYPE_MAP]
-								[--kinship KINSHIP] [--z_matrix Z_MATRIX] [--corvariance_matrix CORVARIANCE_MATRIX]
-								[--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL]
-								[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-								[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
-								[--p_value_filter P_VALUE_FILTER] [--fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER] [--ld_length LD_LENGTH]
+				[--genotype_hapmap GENOTYPE_HAPMAP] [--genotype_data GENOTYPE_DATA] [--genotype_map GENOTYPE_MAP]
+				[--kinship KINSHIP] [--z_matrix Z_MATRIX] [--corvariance_matrix CORVARIANCE_MATRIX]
+				[--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL]
+				[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+				[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+				[--p_value_filter P_VALUE_FILTER] [--fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER] [--ld_length LD_LENGTH]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
