@@ -27,12 +27,12 @@ envs_dirs:
 pkgs_dirs:
 	- /new/path/to/miniconda/pkgs
 channels:
-	- bioconda
 	- conda-forge
+	- bioconda
 	- defaults
 ```
 
-Create a Conda environment named *happigwas*:
+Create a Conda environment named *happigwas* by specifying all required packages (option 1):
 
 ```
 conda create -n happigwas openjdk=8.0.192 vcftools htslib pandas snakemake \
@@ -41,6 +41,18 @@ r-bh r-mvtnorm r-viridislite r-stringi r-rcpp r-uuid r-nlme r-digest r-matrix r-
 r-bigmemory r-genetics r-gplots r-htmltools r-lattice r-magrittr r-lme4 r-mass \
 bioconductor-multtest r-plotly r-rcpparmadillo r-rgl r-gridextra r-scatterplot3d \
 r-snowfall bioconductor-snpstats r-biganalytics r-biglm r-car r-foreach r-doparallel
+```
+
+Create a Conda environment named *happigwas* by using a provided yaml environment file (option 2):
+
+```
+conda create --name happigwas --file happigwas-environment.yaml
+```
+
+Create a Conda environment named *happigwas* by using a provided explicit specification files (option 3):
+
+```
+conda create --name happigwas --file happigwas-spec-file.txt
 ```
 
 Activate *happigwas* Conda environment:
