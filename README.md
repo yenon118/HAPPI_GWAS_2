@@ -43,13 +43,13 @@ bioconductor-multtest r-plotly r-rcpparmadillo r-rgl r-gridextra r-scatterplot3d
 r-snowfall bioconductor-snpstats r-biganalytics r-biglm r-car r-foreach r-doparallel
 ```
 
-Create a Conda environment named *happigwas* by using a provided yaml environment file (option 2):
+Create a Conda environment named *happigwas* by using a yaml environment file (option 2):
 
 ```
 conda create --name happigwas --file happigwas-environment.yaml
 ```
 
-Create a Conda environment named *happigwas* by using a provided explicit specification files (option 3):
+Create a Conda environment named *happigwas* by using a explicit specification file (option 3):
 
 ```
 conda create --name happigwas --file happigwas-spec-file.txt
