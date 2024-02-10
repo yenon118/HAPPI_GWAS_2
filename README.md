@@ -9,9 +9,27 @@ The HAPPI_GWAS_2 is a pipeline built for genome-wide association study (GWAS).
 
 In order to run the HAPPI_GWAS_2, users need to install Miniconda and prepare the Miniconda environment in their computing systems.
 
-Miniconda can be downloaded from [https://docs.conda.io/en/latest/miniconda.html](https://docs.conda.io/en/latest/miniconda.html).
+Miniconda can be downloaded from [https://docs.anaconda.com/free/miniconda/](https://docs.anaconda.com/free/miniconda/).
 
-Installation of the Miniconda is required, and Miniconda environment needs to be activated every time before running the HAPPI_GWAS_2 pipeline.
+For example, if users plan to install Miniconda3 Linux 64-bit, the wget tool can be used to download the Miniconda.
+
+```
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+```
+
+To install Miniconda in a server or cluster, users can use the command below.
+
+Please remember to replace the _<installation_shell_script>_ to the actual Miniconda installation shell script. In our case, it is **Miniconda3-latest-Linux-x86_64.sh**.
+
+Please also remember to replace the _<desired_new_directory>_ to an actual directory absolute path. 
+
+```
+chmod 777 -R <installation_shell_script>
+./<installation_shell_script> -b -u -p <desired_new_directory>
+rm -rf <installation_shell_script>
+```
+
+Installation of the Miniconda is required, and Miniconda environment needs to be activated every time before running the HAPPI_GWAS pipeline.
 
 Write a Conda configuration file (.condarc) before creating a Conda environment:
 
@@ -306,5 +324,3 @@ sbatch test_HAPPI_GWAS_MLMM_Arabidopsis1001_Chr1.sbatch
 ## Remarks
 
 1. The execution time of the HAPPI_GWAS_2 pipeline mainly depends on the size of the data and the available computing resources on the machine.
-
-
