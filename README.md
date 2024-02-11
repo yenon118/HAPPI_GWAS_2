@@ -62,10 +62,10 @@ channels:
     - defaults
 ```
 
-Create a Conda environment named *happigwas* by specifying all required packages (option 1):
+Create a Conda environment named _happigwas_ by specifying all required packages (option 1):
 
 ```
-conda create -n happigwas openjdk=8.0.192 vcftools htslib pandas snakemake \
+conda create -n happigwas openjdk=8.0.192 r-base=4.3 vcftools htslib pandas snakemake \
 r-devtools r-biocmanager r-argparse r-dplyr r-tidyr r-tibble r-stringr r-ggplot2 \
 r-bh r-mvtnorm r-viridislite r-stringi r-rcpp r-uuid r-nlme r-digest r-matrix r-ape \
 r-bigmemory r-genetics r-gplots r-htmltools r-lattice r-magrittr r-lme4 r-mass \
@@ -73,13 +73,13 @@ bioconductor-multtest r-plotly r-rcpparmadillo r-rgl r-gridextra r-scatterplot3d
 r-snowfall bioconductor-snpstats r-biganalytics r-biglm r-car r-foreach r-doparallel
 ```
 
-Create a Conda environment named *happigwas* by using a yaml environment file (option 2):
+Create a Conda environment named _happigwas_ by using a yaml environment file (option 2):
 
 ```
 conda create --name happigwas --file happigwas-environment.yaml
 ```
 
-Create a Conda environment named *happigwas* by using a explicit specification file (option 3):
+Create a Conda environment named _happigwas_ by using a explicit specification file (option 3):
 
 ```
 conda create --name happigwas --file happigwas-spec-file.txt
