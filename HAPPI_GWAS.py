@@ -654,7 +654,7 @@ if __name__ == "__main__":
     parser.add_argument('--model', default='MLM', type=str, help='Model')
     parser.add_argument('--pca_total', default=0, type=int, help='Total PCA')
 
-    parser.add_argument('--ulimit', default=10240, type=int, help='Ulimit')
+    parser.add_argument('--ulimit', default=0, type=int, help='Ulimit')
     parser.add_argument('--memory', default=20, type=int, help='Memory')
     parser.add_argument('--threads', default=4, type=int, help='Threads')
 
