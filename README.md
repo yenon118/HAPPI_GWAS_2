@@ -85,7 +85,7 @@ Create a Conda environment named _happigwas_ by using a explicit specification f
 conda create --name happigwas --file happigwas-spec-file.txt
 ```
 
-Activate *happigwas* Conda environment:
+Activate _happigwas_ Conda environment:
 
 ```
 conda activate happigwas
