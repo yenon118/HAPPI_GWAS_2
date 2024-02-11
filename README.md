@@ -65,7 +65,8 @@ channels:
 Create a Conda environment named _happigwas_ by specifying all required packages (option 1):
 
 ```
-conda create -n happigwas openjdk=8.0.192 r-base=4.3 vcftools htslib pandas snakemake \
+conda create -n happigwas openjdk=8.0.192 r-base=4.3 vcftools htslib pandas \
+snakemake snakemake-executor-plugin-cluster-generic \
 r-devtools r-biocmanager r-argparse r-dplyr r-tidyr r-tibble r-stringr r-ggplot2 \
 r-bh r-mvtnorm r-viridislite r-stringi r-rcpp r-uuid r-nlme r-digest r-matrix r-ape \
 r-bigmemory r-genetics r-gplots r-htmltools r-lattice r-magrittr r-lme4 r-mass \
