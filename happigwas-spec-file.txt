@@ -183,6 +183,7 @@ https://conda.anaconda.org/conda-forge/noarch/jsonschema-4.21.1-pyhd8ed1ab_0.con
 https://conda.anaconda.org/conda-forge/linux-64/nlopt-2.7.1-py312hc70d0cb_4.conda#6a6cae62914d7444edb2467aaa6fc6bd
 https://conda.anaconda.org/conda-forge/linux-64/pandas-2.2.0-py312hfb8ada1_0.conda#07dc8151dda37002f69a95cec87f0526
 https://conda.anaconda.org/conda-forge/linux-64/pango-1.50.14-ha41ecd1_2.conda#1a66c10f6a0da3dbd2f3a68127e7f6a0
+https://conda.anaconda.org/bioconda/noarch/snakemake-executor-plugin-cluster-generic-1.0.7-pyhdfd78af_0.tar.bz2#ef6ddd663d9f9d7516f78f6264aaa372
 https://conda.anaconda.org/conda-forge/noarch/ubiquerg-0.7.0-pyhd8ed1ab_0.conda#d9a3ea73384d96f5e7e63bf9550b005b
 https://conda.anaconda.org/conda-forge/noarch/attmap-0.13.2-pyhd8ed1ab_0.tar.bz2#f7e348eb6bd53f544fd7cde87a7ba3c8
 https://conda.anaconda.org/conda-forge/linux-64/coin-or-osi-0.108.8-ha2443b9_0.conda#7e4adb609b8bf87746d6fab1062348c8

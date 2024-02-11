@@ -381,6 +381,7 @@ slack_sdk=3.26.2=hd8ed1ab_0
 smart_open=6.4.0=pyhd8ed1ab_0
 smmap=5.0.0=pyhd8ed1ab_0
 snakemake=8.4.8=hdfd78af_0
+snakemake-executor-plugin-cluster-generic=1.0.7=pyhdfd78af_0
 snakemake-interface-common=1.15.3=pyhdfd78af_0
 snakemake-interface-executor-plugins=8.2.0=pyhdfd78af_0
 snakemake-interface-storage-plugins=3.0.0=pyhdfd78af_0
