@@ -121,7 +121,7 @@ def main(args):
 
 	if cluster is not None:
 		if cluster != '':
-			snakemake_blup_command_array.append('--cluster')
+			snakemake_blup_command_array.append('--executor cluster-generic --cluster-generic-submit-cmd')
 			snakemake_blup_command_array.append("\""+str(cluster)+"\"")
 
 	# Construct snakemake command string from snakemake command array
