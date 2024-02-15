@@ -19,9 +19,9 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
 To install Miniconda in a server or cluster, users can use the command below.
 
-Please remember to replace the _<installation_shell_script>_ to the actual Miniconda installation shell script. In our case, it is **Miniconda3-latest-Linux-x86_64.sh**.
+Please remember to replace the _<installation_shell_script>_ with the actual Miniconda installation shell script. In our case, it is **Miniconda3-latest-Linux-x86_64.sh**.
 
-Please also remember to replace the _<desired_new_directory>_ to an actual directory absolute path.
+Please also remember to replace the _<desired_new_directory>_ with an actual directory absolute path.
 
 ```
 chmod 777 -R <installation_shell_script>
@@ -31,7 +31,7 @@ rm -rf <installation_shell_script>
 
 After installing Miniconda, initialization of Miniconda for bash shell can be done using the command below.
 
-Please also remember to replace the _<desired_new_directory>_ to an actual directory absolute path.
+Please also remember to replace the _<desired_new_directory>_ with an actual directory absolute path.
 
 ```
 <desired_new_directory>/bin/conda init bash
@@ -49,7 +49,7 @@ Put the following text into the Conda configuration file (make sure you change _
 
 Please make sure not use tab in this yaml file, use 4 spaces instead.
 
-Please make sure to replace _/new/path/to/_ to an actual directory absolute path.
+Please make sure to replace _/new/path/to/_ with an actual directory absolute path.
 
 ```
 envs_dirs:
@@ -80,7 +80,7 @@ Create a Conda environment named _happigwas_ by using a yaml environment file (o
 conda create --name happigwas --file happigwas-environment.yaml
 ```
 
-Create a Conda environment named _happigwas_ by using a explicit specification file (option 3):
+Create a Conda environment named _happigwas_ by using an explicit specification file (option 3):
 
 ```
 conda create --name happigwas --file happigwas-spec-file.txt
@@ -123,7 +123,7 @@ git clone https://github.com/yenon118/HAPPI_GWAS_2.git
 
 ## Usage
 
-The HAPPI_GWAS_2 pipeline is a command line based pipeline that can be ran on any Linux computing systems. It consists of BLUP.py for best linear unbiased prediction, BLUE.py for best linear unbiased estimation, and HAPPI_GWAS.py for GWAS, haploblock analysis, and condidate gene identification. The command and arguments of each tool are shown as below:
+The HAPPI_GWAS_2 pipeline is a command line based pipeline that can be ran on any Linux computing systems. It consists of BLUP.py for best linear unbiased prediction, BLUE.py for best linear unbiased estimation, and HAPPI_GWAS.py for GWAS, haploblock analysis, and candidate gene identification. The command and arguments of each tool are shown as below:
 
 #### BLUP.py
 
