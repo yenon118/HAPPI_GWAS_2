@@ -59,7 +59,7 @@ print("samples: ",samples)
 ## Collect all outputs
 rule all:
     input:
-        expand(os.path.join(os.path.abspath(output_folder),"GAPIT_log",'{sample}.log'),sample=samples)
+        expand(os.path.join(os.path.abspath(output_folder),"GAPIT_out",'{sample}.log'),sample=samples)
 
 
 ## Run GAPIT in a snakemake rule
@@ -79,12 +79,14 @@ rule r_gapit:
         out_folder=os.path.abspath(output_folder),
         ulimit=ulimit
     output:
-        out_file=os.path.join(os.path.abspath(output_folder),"GAPIT_log",'{sample}.log')
+        out_file=os.path.join(os.path.abspath(output_folder),"GAPIT_out",'{sample}.log')
+    log:
+        os.path.join(os.path.abspath(output_folder),"GAPIT_log",'{sample}.log')
     threads: threads
     resources:
         memory=memory
     shell:
         """
         mkdir -p {params.out_folder};
-        Rscript {workflow_path}/scripts/R/GAPIT.R -i {input.in_file} -o {params.out_folder} --genotype_hapmap {params.genotype_hapmap} --genotype_data {params.genotype_data} --genotype_map {params.genotype_map} --kinship {params.kinship} --z_matrix {params.z_matrix} --corvariance_matrix {params.corvariance_matrix} --snp_maf {params.snp_maf} --model {params.model} --pca_total {params.pca_total} > {output.out_file}
+        Rscript {workflow_path}/scripts/R/GAPIT.R -i {input.in_file} -o {params.out_folder} --genotype_hapmap {params.genotype_hapmap} --genotype_data {params.genotype_data} --genotype_map {params.genotype_map} --kinship {params.kinship} --z_matrix {params.z_matrix} --corvariance_matrix {params.corvariance_matrix} --snp_maf {params.snp_maf} --model {params.model} --pca_total {params.pca_total} | tee {log} {output.out_file}
         """
