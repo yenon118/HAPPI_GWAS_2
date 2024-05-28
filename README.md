@@ -65,13 +65,20 @@ channels:
 Create a Conda environment named _happigwas_ by specifying all required packages (option 1):
 
 ```
-conda create -n happigwas openjdk=8.0.192 r-base=4.3 vcftools htslib pandas \
-snakemake snakemake-executor-plugin-cluster-generic \
-r-devtools r-biocmanager r-argparse r-dplyr r-tidyr r-tibble r-stringr r-ggplot2 \
-r-bh r-mvtnorm r-viridislite r-stringi r-rcpp r-uuid r-nlme r-digest r-matrix r-ape \
-r-bigmemory r-genetics r-gplots r-htmltools r-lattice r-magrittr r-lme4 r-mass \
-bioconductor-multtest r-plotly r-rcpparmadillo r-rgl r-gridextra r-scatterplot3d \
-r-snowfall bioconductor-snpstats r-biganalytics r-biglm r-car r-foreach r-doparallel
+conda create -n happigwas conda-forge::openjdk=8.0.192 conda-forge::r-base \
+bioconda::vcftools bioconda::htslib conda-forge::pandas \
+bioconda::snakemake bioconda::snakemake-executor-plugin-cluster-generic \
+conda-forge::r-devtools conda-forge::r-biocmanager conda-forge::r-argparse \
+conda-forge::r-dplyr conda-forge::r-tidyr conda-forge::r-tibble conda-forge::r-stringr \
+conda-forge::r-ggplot2 conda-forge::r-bh conda-forge::r-mvtnorm conda-forge::r-viridislite \
+conda-forge::r-stringi conda-forge::r-rcpp conda-forge::r-uuid conda-forge::r-nlme \
+conda-forge::r-digest conda-forge::r-matrix conda-forge::r-ape conda-forge::r-bigmemory \
+conda-forge::r-genetics conda-forge::r-gplots conda-forge::r-htmltools \
+conda-forge::r-lattice conda-forge::r-magrittr conda-forge::r-lme4 conda-forge::r-mass \
+bioconda::bioconductor-multtest conda-forge::r-plotly conda-forge::r-rcpparmadillo \
+conda-forge::r-rgl conda-forge::r-gridextra conda-forge::r-scatterplot3d \
+conda-forge::r-snowfall bioconda::bioconductor-snpstats conda-forge::r-biganalytics \
+conda-forge::r-biglm conda-forge::r-car conda-forge::r-foreach conda-forge::r-doparallel
 ```
 
 Create a Conda environment named _happigwas_ by using a yaml environment file (option 2):
