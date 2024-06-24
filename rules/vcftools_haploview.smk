@@ -46,7 +46,7 @@ rule all:
         expand(os.path.join(os.path.abspath(output_folder),"VCFtools",'{region}.recode.vcf.gz'),region=regions),
         expand(os.path.join(os.path.abspath(output_folder),"VCFtools",'{region}.ped'),region=regions),
         expand(os.path.join(os.path.abspath(output_folder),"VCFtools",'{region}.map'),region=regions),
-        expand(os.path.join(os.path.abspath(output_folder),"Haploview",'{region}.LD'),region=regions)
+        expand(os.path.join(os.path.abspath(output_folder),"Haploview",'{region}.out'),region=regions)
 
 
 ## Run VCFtools to subset and convert to plink in a snakemake rule
@@ -81,12 +81,14 @@ rule haploview:
         out_folder=os.path.join(os.path.abspath(output_folder),"Haploview"),
         ulimit=ulimit
     output:
-        ld_file=os.path.join(os.path.abspath(output_folder),"Haploview",'{region}.LD')
+        out_file=os.path.join(os.path.abspath(output_folder),"Haploview",'{region}.out')
+    log:
+        os.path.join(os.path.abspath(output_folder),"Haploview_log",'{region}.log')
     threads: threads
     resources:
         memory=memory
     shell:
         """
         mkdir -p {params.out_folder};
-        java -Xmx{resources.memory}g -jar {workflow_path}/tools/Haploview.jar -n -out {params.output_prefix} -pedfile {input.ped_file} -map {input.map_file} -skipcheck -dprime -png -ldcolorscheme DEFAULT -ldvalues DPRIME -blockoutput GAB -minMAF 0.05
+        java -Xmx{resources.memory}g -jar {workflow_path}/tools/Haploview.jar -n -out {params.output_prefix} -pedfile {input.ped_file} -map {input.map_file} -skipcheck -dprime -png -ldcolorscheme DEFAULT -ldvalues DPRIME -blockoutput GAB -minMAF 0.05 | tee {log} {output.out_file}
         """

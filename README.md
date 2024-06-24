@@ -265,9 +265,9 @@ cd /path/to/HAPPI_GWAS_2
 
 conda activate happigwas
 
-python BLUP.py -p Test -w /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2 \
--i /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis360_example_data/original_data_split \
--o /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/output/BLUP_Arabidopsis360
+python BLUP.py -p Test -w /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2 \
+-i /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Arabidopsis360_example_data/original_data_split \
+-o /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/output/BLUP_Arabidopsis360
 ```
 
 #### BLUE.py
@@ -277,9 +277,9 @@ cd /path/to/HAPPI_GWAS_2
 
 conda activate happigwas
 
-python BLUE.py -p Test -w /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2 \
--i /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Arabidopsis360_example_data/original_data_split \
--o /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/output/BLUE_Arabidopsis360
+python BLUE.py -p Test -w /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2 \
+-i /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Arabidopsis360_example_data/original_data_split \
+-o /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/output/BLUE_Arabidopsis360
 ```
 
 #### HAPPI_GWAS.py
@@ -291,12 +291,12 @@ conda activate happigwas
 
 python3 HAPPI_GWAS.py \
 -p Test \
--w /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2 \
--i /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
--o /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLM \
--v /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf/mdp_genotype_test.vcf.gz \
--g /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
---genotype_hapmap /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap/mdp_genotype_test.hmp.txt \
+-w /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2 \
+-i /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
+-o /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLM \
+-v /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf/mdp_genotype_test.vcf.gz \
+-g /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
+--genotype_hapmap /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap/mdp_genotype_test.hmp.txt \
 --p_value_filter 0.01
 ```
 
@@ -307,12 +307,12 @@ conda activate happigwas
 
 python3 HAPPI_GWAS.py \
 -p Test \
--w /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2 \
--i /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
--o /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLMM \
--v /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf/mdp_genotype_test.vcf.gz \
--g /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
---genotype_hapmap /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap/mdp_genotype_test.hmp.txt \
+-w /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2 \
+-i /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
+-o /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLMM \
+-v /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf/mdp_genotype_test.vcf.gz \
+-g /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
+--genotype_hapmap /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap/mdp_genotype_test.hmp.txt \
 --model MLMM \
 --p_value_filter 0.01
 ```
@@ -324,12 +324,12 @@ conda activate happigwas
 
 python3 HAPPI_GWAS.py \
 -p Test \
--w /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2 \
--i /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
--o /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_FarmCPU \
--v /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf/mdp_genotype_test.vcf.gz \
--g /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
---genotype_hapmap /storage/htc/joshilab/yenc/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap/mdp_genotype_test.hmp.txt \
+-w /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2 \
+-i /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
+-o /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_FarmCPU \
+-v /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf/mdp_genotype_test.vcf.gz \
+-g /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
+--genotype_hapmap /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap/mdp_genotype_test.hmp.txt \
 --model FarmCPU \
 --p_value_filter 0.01 \
 --cluster "sbatch --account=xulab --cpus-per-task=3 --time=0-02:00 --partition=Lewis,BioCompute,hpc5,General --mem=64G --output=log_2023_06_15_r_gapit_\%A-\%a.out"
