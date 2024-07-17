@@ -488,10 +488,9 @@ def main(args):
                         line = str(re.sub(".*MARKERS:", "", line)).strip("\n").strip("\r").strip("\r\n").strip(" ")
                         line_array = re.split(" ", line)
                         if len(line_array) > 1:
-                            haploblock_start_index = int(line_array[0]) - 1
-                            haploblock_end_index = int(line_array[(len(line_array) - 1)]) - 1
-                            if (haploblock_start_index > -1) and (haploblock_end_index > -1) and (
-                                    haploblock_start_index < haploblock_end_index):
+                            haploblock_start_index = int(float(line_array[0])) - 1
+                            haploblock_end_index = int(float(line_array[(len(line_array) - 1)])) - 1
+                            if (haploblock_start_index > -1) and (haploblock_end_index > -1) and (haploblock_start_index < haploblock_end_index):
                                 haploblock_start = recode_vcf_position_array[haploblock_start_index]
                                 haploblock_end = recode_vcf_position_array[haploblock_end_index]
                                 haploblock_start_array.append(haploblock_start)
@@ -538,10 +537,9 @@ def main(args):
             if len(haplotype_blocks_data_array) > 0:
                 for i in range(len(haplotype_blocks_data_array)):
                     # Match chromosome
-                    if (line_array[1] == haplotype_blocks_data_array[i][0]):
+                    if line_array[1] == haplotype_blocks_data_array[i][0]:
                         # Check if marker position is within haplotyle block region
-                        if (int(haplotype_blocks_data_array[i][3]) <= int(line_array[2]) <= int(
-                                haplotype_blocks_data_array[i][4])):
+                        if int(float(haplotype_blocks_data_array[i][3])) <= int(float(line_array[2])) <= int(float(haplotype_blocks_data_array[i][4])):
                             haploblock_start = haplotype_blocks_data_array[i][3]
                             haploblock_end = haplotype_blocks_data_array[i][4]
                             break
@@ -587,39 +585,32 @@ def main(args):
             if len(gff_data_array) > 0:
                 for i in range(len(gff_data_array)):
                     # Match chromosome
-                    if (line_array[1] == gff_data_array[i][0]):
+                    if line_array[1] == gff_data_array[i][0]:
                         # Check if haplotype block region exists
                         if (line_array[13] != '') and (line_array[14] != ''):
-                            if (int(gff_data_array[i][3]) <= int(line_array[13]) <= int(gff_data_array[i][4])) and (
-                                    int(gff_data_array[i][3]) <= int(line_array[14]) <= int(gff_data_array[i][4])):
+                            if (int(float(gff_data_array[i][3])) <= int(float(line_array[13])) <= int(float(gff_data_array[i][4]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[14])) <= int(float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Full"
-                            elif (overlap_strategy != "Full") and (
-                                    int(line_array[13]) < int(gff_data_array[i][3])) and (
-                                    int(gff_data_array[i][3]) <= int(line_array[14]) <= int(gff_data_array[i][4])):
+                            if (overlap_strategy != "Full") and (int(float(line_array[13])) < int(float(gff_data_array[i][3]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[14])) <= int(float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Partial"
-                            elif (overlap_strategy != "Full") and (
-                                    int(gff_data_array[i][3]) <= int(line_array[13]) <= int(gff_data_array[i][4])) and (
-                                    int(line_array[14]) > int(gff_data_array[i][4])):
+                            if (overlap_strategy != "Full") and (int(float(gff_data_array[i][3])) <= int(float(line_array[13])) <= int(float(gff_data_array[i][4]))) and (int(float(line_array[14])) > int(float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Partial"
                         # Check if marker position is within GFF region
-                        if (overlap_strategy == "") and (
-                                int(gff_data_array[i][3]) <= int(line_array[2]) <= int(gff_data_array[i][4])):
+                        if (overlap_strategy == "") and (int(float(gff_data_array[i][3])) <= int(float(line_array[2])) <= int(float(gff_data_array[i][4]))):
                             gene_start = gff_data_array[i][3]
                             gene_end = gff_data_array[i][4]
                             gene_id = gff_data_array[i][8]
                             overlap_strategy = "Marker"
 
-            line = line + "\t" + str(gene_start) + "\t" + str(gene_end) + "\t" + str(gene_id) + "\t" + str(
-                overlap_strategy) + "\n"
+            line = line + "\t" + str(gene_start) + "\t" + str(gene_end) + "\t" + str(gene_id) + "\t" + str(overlap_strategy) + "\n"
             f_hdl.write(line)
 
     f_hdl.close()
