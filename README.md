@@ -66,7 +66,7 @@ Create a Conda environment named _happigwas_ by specifying all required packages
 
 ```
 conda create -n happigwas conda-forge::openjdk=8.0.192 conda-forge::r-base \
-bioconda::vcftools bioconda::htslib conda-forge::pandas \
+bioconda::vcftools bioconda::htslib conda-forge::pandas conda-forge::statsmodels \
 bioconda::snakemake bioconda::snakemake-executor-plugin-cluster-generic \
 conda-forge::r-devtools conda-forge::r-biocmanager conda-forge::r-argparse \
 conda-forge::r-dplyr conda-forge::r-tidyr conda-forge::r-tibble conda-forge::r-stringr \
@@ -332,7 +332,7 @@ python3 HAPPI_GWAS.py \
 --genotype_hapmap /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap/mdp_genotype_test.hmp.txt \
 --model FarmCPU \
 --p_value_filter 0.01 \
---cluster "sbatch --account=xulab --cpus-per-task=3 --time=0-02:00 --partition=Lewis,BioCompute,hpc5,General --mem=64G --output=log_2023_06_15_r_gapit_\%A-\%a.out"
+--cluster "sbatch --account=joshitr-lab --cpus-per-task=3 --time=0-02:00 --partition=interactive,general,requeue,gpu,joshitr-lab,xudong-lab --mem=64G --output=log_2023_06_15_r_gapit_\%A-\%a.out"
 ```
 
 ```

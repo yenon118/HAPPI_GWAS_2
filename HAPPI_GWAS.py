@@ -12,6 +12,8 @@ import argparse
 
 import pandas as pd
 
+from statsmodels.stats.multitest import multipletests
+
 
 def main(args):
     #######################################################################
@@ -52,6 +54,8 @@ def main(args):
 
     p_value_filter = args.p_value_filter
     fdr_corrected_p_value_filter = args.fdr_corrected_p_value_filter
+    multipletests_method = args.multipletests_method
+    multipletests_p_value_filter = args.multipletests_p_value_filter
     ld_length = args.ld_length
 
     #######################################################################
@@ -252,12 +256,18 @@ def main(args):
         with open(gapit_output_folder.joinpath("Snakemake_GAPIT.log"), 'w') as writer:
             writer.write(
                 "\n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(
-                    snakemake_gapit_outcome.stdout, snakemake_gapit_outcome.stderr, snakemake_gapit_outcome.args,
-                    snakemake_gapit_outcome.returncode))
+                    snakemake_gapit_outcome.stdout,
+                    snakemake_gapit_outcome.stderr,
+                    snakemake_gapit_outcome.args,
+                    snakemake_gapit_outcome.returncode
+                )
+            )
     except subprocess.CalledProcessError as e:
         print(
             "\n\nOutput: \n{} \n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(
-                e.output, e.stdout, e.stderr, e.cmd, e.returncode))
+                e.output, e.stdout, e.stderr, e.cmd, e.returncode
+            )
+        )
     except Exception as e:
         print(e)
 
@@ -266,9 +276,12 @@ def main(args):
     #######################################################################
 
     #  Specify GAPIT results file and GAPIT result LD region file
-    gapit_gwas_result_file = gapit_output_folder.joinpath("GAPIT.Association.GWAS_Results." + str(model) + ".All.txt")
+    gapit_gwas_result_file = gapit_output_folder.joinpath(
+        "GAPIT.Association.GWAS_Results." + str(model) + ".All.txt"
+    )
     gapit_gwas_result_ld_region_file = gapit_output_folder.joinpath(
-        "GAPIT.Association.GWAS_Results." + str(model) + ".Unique_LD_Regions.txt")
+        "GAPIT.Association.GWAS_Results." + str(model) + ".Unique_LD_Regions.txt"
+    )
 
     # Data save parameters
     header = True
@@ -283,7 +296,11 @@ def main(args):
                     # Read GWAS result file
                     dat = pd.read_csv(filepath_or_buffer=gwas_result_files[i])
                     # Extract the trait from filename
-                    trait = re.sub("(GAPIT.Association.GWAS_Results.)|(.csv)", "", str(gwas_result_files[i].name))
+                    trait = re.sub(
+                        "(GAPIT.Association.GWAS_Results.)|(.csv)",
+                        "",
+                        str(gwas_result_files[i].name)
+                    )
                     trait = trait.replace(model, '')
                     trait = trait.lstrip('\\.')
                     # Add model, trait, ld_number, ld_start, and ld_end columns
@@ -293,9 +310,6 @@ def main(args):
                     dat["LD_start"] = dat["Pos"] - ld_length
                     dat["LD_end"] = dat["Pos"] + ld_length
                     dat.loc[dat.LD_start < 0, 'LD_start'] = 0
-                    # Filter data based on p-value and FDR corrected p-value
-                    dat = dat[dat["P.value"] <= p_value_filter]
-                    dat = dat[dat["H&B.P.Value"] <= fdr_corrected_p_value_filter]
                     # Check if data is not empty
                     if dat.shape[0] > 0 and dat.shape[1] > 0:
                         # Write to one output file to append all data
@@ -313,6 +327,39 @@ def main(args):
             sys.exit(1)
     else:
         print("Output folder does not exists!!!")
+        sys.exit(1)
+
+    #######################################################################
+    # Filter GWAS results
+    #######################################################################
+
+    # Data save parameters
+    header = True
+    mode = 'w'
+    # Check if GAPIT GWAS result file exists
+    if gapit_gwas_result_file.exists():
+        # Read GAPIT GWAS result file
+        dat = pd.read_table(filepath_or_buffer=gapit_gwas_result_file)
+        # Check if data is not empty
+        if dat.shape[0] > 0 and dat.shape[1] > 0:
+            # Write multipletests_method into the data table
+            dat["Multipletests_Method"] = multipletests_method
+            # Compute for adjusted p-values
+            dat['Multipletests_Adjusted_P_Value'] = dat.groupby(['Model', 'Trait'], group_keys=False)[['P.value']].apply(
+                lambda g: pd.Series(multipletests(g['P.value'], method=multipletests_method)[1], index=g.index),
+                include_groups=False
+            )
+            # Filter data based on p-value and corrected p-value
+            dat = dat[dat["P.value"] <= p_value_filter]
+            dat = dat[dat["H&B.P.Value"] <= fdr_corrected_p_value_filter]
+            dat = dat[dat["Multipletests_Adjusted_P_Value"] <= multipletests_p_value_filter]
+            if dat.shape[0] > 0 and dat.shape[1] > 0:
+                dat.to_csv(path_or_buf=gapit_gwas_result_file, sep='\t', mode=mode, header=header, index=False)
+            else:
+                print("GAPIT GWAS result is empty after filtering!!!")
+                sys.exit(1)
+    else:
+        print("GAPIT GWAS result file does not exists!!!")
         sys.exit(1)
 
     #######################################################################
@@ -406,12 +453,18 @@ def main(args):
         with open(vcftools_haploview_output_folder.joinpath("Snakemake_VCFtools_Haploview.log"), 'w') as writer:
             writer.write(
                 "\n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(
-                    snakemake_vcftools_haploview_outcome.stdout, snakemake_vcftools_haploview_outcome.stderr,
-                    snakemake_vcftools_haploview_outcome.args, snakemake_vcftools_haploview_outcome.returncode))
+                    snakemake_vcftools_haploview_outcome.stdout,
+                    snakemake_vcftools_haploview_outcome.stderr,
+                    snakemake_vcftools_haploview_outcome.args,
+                    snakemake_vcftools_haploview_outcome.returncode
+                )
+            )
     except subprocess.CalledProcessError as e:
         print(
             "\n\nOutput: \n{} \n\nStandard output: \n{} \n\nStandard error: \n{} \n\nCommand: \n{} \n\nReturn code: \n{} \n\n".format(
-                e.output, e.stdout, e.stderr, e.cmd, e.returncode))
+                e.output, e.stdout, e.stderr, e.cmd, e.returncode
+            )
+        )
     except Exception as e:
         print(e)
 
@@ -502,8 +555,14 @@ def main(args):
                 with open(haplotype_blocks_file, 'a') as writer:
                     for j in range(len(haploblock_start_array)):
                         writer.write(
-                            "{}\t{}\t{}\t{}\t{}\n".format(chromsome, ld_start, ld_end, haploblock_start_array[j],
-                                                          haploblock_end_array[j]))
+                            "{}\t{}\t{}\t{}\t{}\n".format(
+                                chromsome,
+                                ld_start,
+                                ld_end,
+                                haploblock_start_array[j],
+                                haploblock_end_array[j]
+                            )
+                        )
 
     #######################################################################
     # Generate GWAS results file with haploblock data
@@ -560,8 +619,9 @@ def main(args):
             if not line.startswith("#"):
                 line_array = line.split("\t")
                 if line_array[2] == gff_category:
-                    line_array[8] = str(re.sub(';.*', '', re.sub(fr'^.*?{gff_key}', '', line_array[8]))).strip(
-                        "=").strip(":").strip(";").strip("_").strip("-")
+                    line_array[8] = str(
+                        re.sub(';.*', '', re.sub(fr'^.*?{gff_key}', '', line_array[8]))
+                    ).strip("=").strip(":").strip(";").strip("_").strip("-")
                     gff_data_array.append(line_array)
 
     # Create GWAS results file with haploblock data and GFF regions
@@ -587,18 +647,18 @@ def main(args):
                     # Match chromosome
                     if line_array[1] == gff_data_array[i][0]:
                         # Check if haplotype block region exists
-                        if (line_array[13] != '') and (line_array[14] != ''):
-                            if (int(float(gff_data_array[i][3])) <= int(float(line_array[13])) <= int(float(gff_data_array[i][4]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[14])) <= int(float(gff_data_array[i][4]))):
+                        if (line_array[15] != '') and (line_array[16] != ''):
+                            if (int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(float(gff_data_array[i][4]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Full"
-                            if (overlap_strategy != "Full") and (int(float(line_array[13])) < int(float(gff_data_array[i][3]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[14])) <= int(float(gff_data_array[i][4]))):
+                            if (overlap_strategy != "Full") and (int(float(line_array[15])) < int(float(gff_data_array[i][3]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Partial"
-                            if (overlap_strategy != "Full") and (int(float(gff_data_array[i][3])) <= int(float(line_array[13])) <= int(float(gff_data_array[i][4]))) and (int(float(line_array[14])) > int(float(gff_data_array[i][4]))):
+                            if (overlap_strategy != "Full") and (int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(float(gff_data_array[i][4]))) and (int(float(line_array[16])) > int(float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
@@ -656,6 +716,8 @@ if __name__ == "__main__":
 
     parser.add_argument('--p_value_filter', default=1.0, type=float, help='P-value filter')
     parser.add_argument('--fdr_corrected_p_value_filter', default=1.0, type=float, help='FDR corrected p-value filter')
+    parser.add_argument('--multipletests_method', default='fdr_bh', type=str, help='multipletests method')
+    parser.add_argument('--multipletests_p_value_filter', default=1.0, type=float, help='multipletests corrected p-value filter')
     parser.add_argument('--ld_length', default=10000, type=int, help='LD length')
 
     args = parser.parse_args()
