@@ -250,6 +250,10 @@ optional arguments:
                         P-value filter
   --fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER
                         FDR corrected p-value filter
+  --multipletests_method MULTIPLETESTS_METHOD
+                        Multipletests method
+  --multipletests_p_value_filter MULTIPLETESTS_P_VALUE_FILTER
+                        Multipletests corrected p-value filter
   --ld_length LD_LENGTH
                         LD length
 ```

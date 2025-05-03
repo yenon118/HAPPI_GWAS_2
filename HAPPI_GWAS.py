@@ -716,8 +716,8 @@ if __name__ == "__main__":
 
     parser.add_argument('--p_value_filter', default=1.0, type=float, help='P-value filter')
     parser.add_argument('--fdr_corrected_p_value_filter', default=1.0, type=float, help='FDR corrected p-value filter')
-    parser.add_argument('--multipletests_method', default='fdr_bh', type=str, help='multipletests method')
-    parser.add_argument('--multipletests_p_value_filter', default=1.0, type=float, help='multipletests corrected p-value filter')
+    parser.add_argument('--multipletests_method', default='fdr_bh', type=str, help='Multipletests method')
+    parser.add_argument('--multipletests_p_value_filter', default=1.0, type=float, help='Multipletests corrected p-value filter')
     parser.add_argument('--ld_length', default=10000, type=int, help='LD length')
 
     args = parser.parse_args()
