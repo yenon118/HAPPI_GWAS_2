@@ -113,33 +113,14 @@ def main(args):
         sys.exit(1)
 
     # At-least-one arguments checking
-    if genotype_hapmap != 'NULL':
-        try:
-            genotype_hapmap = pathlib.Path(genotype_hapmap)
-            if not genotype_hapmap.exists():
-                genotype_hapmap = 'NULL'
-        except Exception as e:
-            genotype_hapmap = 'NULL'
-            print(e)
-    if genotype_data != 'NULL':
-        try:
-            genotype_data = pathlib.Path(genotype_data)
-            if not genotype_data.exists():
-                genotype_data = 'NULL'
-        except Exception as e:
-            genotype_data = 'NULL'
-            print(e)
-    if genotype_map != 'NULL':
-        try:
-            genotype_map = pathlib.Path(genotype_map)
-            if not genotype_map.exists():
-                genotype_map = 'NULL'
-        except Exception as e:
-            genotype_map = 'NULL'
-            print(e)
-    if genotype_hapmap == 'NULL' and genotype_data == 'NULL' and genotype_map == 'NULL':
-        print('Genotype hapmap, genotype data, and genotype map are not provided!!!')
-        sys.exit(1)
+    if genotype_hapmap:
+        pass
+    else:
+        if genotype_data and genotype_map:
+            pass
+        else:
+            print('Genotype hapmap, genotype data, and genotype map are not provided!!!')
+            sys.exit(1)
 
     #######################################################################
     # Check if output parent folder exists
@@ -193,14 +174,14 @@ def main(args):
     #######################################################################
     gapit_config_data = {
         "project_name": project_name,
-        "workflow_path": str(workflow_path),
-        "input_folder": str(input_folder),
-        "output_folder": str(gapit_output_folder),
-        "genotype_hapmap": str(genotype_hapmap),
-        "genotype_data": str(genotype_data),
-        "genotype_map": str(genotype_map),
-        "kinship": kinship,
-        "corvariance_matrix": corvariance_matrix,
+        "workflow_path": str(workflow_path) if workflow_path is not None else None,
+        "input_folder": str(input_folder) if input_folder is not None else None,
+        "output_folder": str(gapit_output_folder) if gapit_output_folder is not None else None,
+        "genotype_hapmap": str(genotype_hapmap) if genotype_hapmap is not None else None,
+        "genotype_data": str(genotype_data) if genotype_data is not None else None,
+        "genotype_map": str(genotype_map) if genotype_map is not None else None,
+        "kinship": str(kinship) if kinship is not None else None,
+        "corvariance_matrix": str(corvariance_matrix) if corvariance_matrix is not None else None,
         "snp_maf": snp_maf,
         "model": model,
         "pca_total": pca_total,
@@ -344,7 +325,8 @@ def main(args):
             # Write multipletests_method into the data table
             dat["Multipletests_Method"] = multipletests_method
             # Compute for adjusted p-values
-            dat['Multipletests_Adjusted_P_Value'] = dat.groupby(['Model', 'Trait'], group_keys=False)[['P.value']].apply(
+            dat['Multipletests_Adjusted_P_Value'] = dat.groupby(['Model', 'Trait'], group_keys=False)[
+                ['P.value']].apply(
                 lambda g: pd.Series(multipletests(g['P.value'], method=multipletests_method)[1], index=g.index),
                 include_groups=False
             )
@@ -397,10 +379,12 @@ def main(args):
     #######################################################################
     vcftools_haploview_config_data = {
         "project_name": project_name,
-        "workflow_path": str(workflow_path),
-        "input_file": str(gapit_gwas_result_ld_region_file),
-        "output_folder": str(vcftools_haploview_output_folder),
-        "vcf_file": str(vcf_file),
+        "workflow_path": str(workflow_path) if workflow_path is not None else None,
+        "input_file": str(gapit_gwas_result_ld_region_file) if gapit_gwas_result_ld_region_file is not None else None,
+        "output_folder": str(
+            vcftools_haploview_output_folder
+        ) if vcftools_haploview_output_folder is not None else None,
+        "vcf_file": str(vcf_file) if vcf_file is not None else None,
         "ulimit": ulimit,
         "memory": memory,
         "threads": threads
@@ -542,7 +526,8 @@ def main(args):
                         if len(line_array) > 1:
                             haploblock_start_index = int(float(line_array[0])) - 1
                             haploblock_end_index = int(float(line_array[(len(line_array) - 1)])) - 1
-                            if (haploblock_start_index > -1) and (haploblock_end_index > -1) and (haploblock_start_index < haploblock_end_index):
+                            if (haploblock_start_index > -1) and (haploblock_end_index > -1) and (
+                                    haploblock_start_index < haploblock_end_index):
                                 haploblock_start = recode_vcf_position_array[haploblock_start_index]
                                 haploblock_end = recode_vcf_position_array[haploblock_end_index]
                                 haploblock_start_array.append(haploblock_start)
@@ -578,7 +563,8 @@ def main(args):
 
     # Create GWAS results file with haploblock data
     vcftools_haploview_gwas_result_file = vcftools_haploview_output_folder.joinpath(
-        "GAPIT.Association.GWAS_Results." + str(model) + ".All.txt")
+        "GAPIT.Association.GWAS_Results." + str(model) + ".All.txt"
+    )
 
     f_hdl = open(vcftools_haploview_gwas_result_file, "w")
 
@@ -597,7 +583,8 @@ def main(args):
                     # Match chromosome
                     if line_array[1] == haplotype_blocks_data_array[i][0]:
                         # Check if marker position is within haplotyle block region
-                        if int(float(haplotype_blocks_data_array[i][3])) <= int(float(line_array[2])) <= int(float(haplotype_blocks_data_array[i][4])):
+                        if int(float(haplotype_blocks_data_array[i][3])) <= int(float(line_array[2])) <= int(
+                                float(haplotype_blocks_data_array[i][4])):
                             haploblock_start = haplotype_blocks_data_array[i][3]
                             haploblock_end = haplotype_blocks_data_array[i][4]
                             break
@@ -647,29 +634,41 @@ def main(args):
                     if line_array[1] == gff_data_array[i][0]:
                         # Check if haplotype block region exists
                         if (line_array[15] != '') and (line_array[16] != ''):
-                            if (int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(float(gff_data_array[i][4]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(float(gff_data_array[i][4]))):
+                            if (int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(
+                                    float(gff_data_array[i][4]))) and (
+                                    int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(
+                                float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Full"
-                            if (overlap_strategy != "Full") and (int(float(line_array[15])) < int(float(gff_data_array[i][3]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(float(gff_data_array[i][4]))):
+                            if (overlap_strategy != "Full") and (
+                                    int(float(line_array[15])) < int(float(gff_data_array[i][3]))) and (
+                                    int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(
+                                float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Partial"
-                            if (overlap_strategy != "Full") and (int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(float(gff_data_array[i][4]))) and (int(float(line_array[16])) > int(float(gff_data_array[i][4]))):
+                            if (overlap_strategy != "Full") and (
+                                    int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(
+                                float(gff_data_array[i][4]))) and (
+                                    int(float(line_array[16])) > int(float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Partial"
                         # Check if marker position is within GFF region
-                        if (overlap_strategy == "") and (int(float(gff_data_array[i][3])) <= int(float(line_array[2])) <= int(float(gff_data_array[i][4]))):
+                        if (overlap_strategy == "") and (
+                                int(float(gff_data_array[i][3])) <= int(float(line_array[2])) <= int(
+                            float(gff_data_array[i][4]))):
                             gene_start = gff_data_array[i][3]
                             gene_end = gff_data_array[i][4]
                             gene_id = gff_data_array[i][8]
                             overlap_strategy = "Marker"
 
-            line = line + "\t" + str(gene_start) + "\t" + str(gene_end) + "\t" + str(gene_id) + "\t" + str(overlap_strategy) + "\n"
+            line = line + "\t" + str(gene_start) + "\t" + str(gene_end) + "\t" + str(gene_id) + "\t" + str(
+                overlap_strategy) + "\n"
             f_hdl.write(line)
 
     f_hdl.close()
@@ -693,12 +692,12 @@ if __name__ == "__main__":
     parser.add_argument('--gff_category', help='GFF category', type=str, default='gene')
     parser.add_argument('--gff_key', help='GFF key', type=str, default='ID')
 
-    parser.add_argument('--genotype_hapmap', default='NULL', help='Genotype hapmap', type=str)
-    parser.add_argument('--genotype_data', default='NULL', help='Genotype data', type=str)
-    parser.add_argument('--genotype_map', default='NULL', help='Genotype map', type=str)
+    parser.add_argument('--genotype_hapmap', help='Genotype hapmap', type=pathlib.Path)
+    parser.add_argument('--genotype_data', help='Genotype data', type=pathlib.Path)
+    parser.add_argument('--genotype_map', help='Genotype map', type=pathlib.Path)
 
-    parser.add_argument('--kinship', default='NULL', type=str, help='Kinship matrix file')
-    parser.add_argument('--corvariance_matrix', default='NULL', type=str, help='Corvariance matrix file')
+    parser.add_argument('--kinship', type=pathlib.Path, help='Kinship matrix file')
+    parser.add_argument('--corvariance_matrix', type=pathlib.Path, help='Corvariance matrix file')
     parser.add_argument('--snp_maf', default=0.0, type=float, help='SNP minor allele frequency')
     parser.add_argument('--model', default='MLM', type=str, help='Model')
     parser.add_argument('--pca_total', default=0, type=int, help='Total PCA')
@@ -713,9 +712,24 @@ if __name__ == "__main__":
     parser.add_argument('--cluster', default='', type=str, help='Cluster parameters')
 
     parser.add_argument('--p_value_filter', default=1.0, type=float, help='P-value filter')
-    parser.add_argument('--fdr_corrected_p_value_filter', default=1.0, type=float, help='FDR corrected p-value filter')
-    parser.add_argument('--multipletests_method', default='fdr_bh', type=str, help='Multipletests method')
-    parser.add_argument('--multipletests_p_value_filter', default=1.0, type=float, help='Multipletests corrected p-value filter')
+    parser.add_argument(
+        '--fdr_corrected_p_value_filter',
+        default=1.0,
+        type=float,
+        help='FDR corrected p-value filter'
+    )
+    parser.add_argument(
+        '--multipletests_method',
+        default='fdr_bh',
+        type=str,
+        help='Multipletests method'
+    )
+    parser.add_argument(
+        '--multipletests_p_value_filter',
+        default=1.0,
+        type=float,
+        help='Multipletests corrected p-value filter'
+    )
     parser.add_argument('--ld_length', default=10000, type=int, help='LD length')
 
     args = parser.parse_args()

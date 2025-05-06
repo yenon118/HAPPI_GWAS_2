@@ -142,8 +142,8 @@ haploblock analysis, and candidate gene identification. The command and argument
 
 ```
 usage: python BLUP.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER [-e FEATURE_COLUMN_INDEXES]
-			[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-			[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+                        [--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+                        [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
@@ -173,8 +173,8 @@ optional arguments:
 
 ```
 usage: python BLUE.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER [-e FEATURE_COLUMN_INDEXES]
-			[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-			[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+                        [--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+                        [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
@@ -204,12 +204,12 @@ optional arguments:
 
 ```
 usage: python3 HAPPI_GWAS.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER -v VCF_FILE -g GFF_FILE [--gff_category GFF_CATEGORY] [--gff_key GFF_KEY]
-				[--genotype_hapmap GENOTYPE_HAPMAP] [--genotype_data GENOTYPE_DATA] [--genotype_map GENOTYPE_MAP]
-				[--kinship KINSHIP] [--z_matrix Z_MATRIX] [--corvariance_matrix CORVARIANCE_MATRIX]
-				[--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL]
-				[--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
-				[--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
-				[--p_value_filter P_VALUE_FILTER] [--fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER] [--ld_length LD_LENGTH]
+                                [--genotype_hapmap GENOTYPE_HAPMAP] [--genotype_data GENOTYPE_DATA] [--genotype_map GENOTYPE_MAP]
+                                [--kinship KINSHIP] [--z_matrix Z_MATRIX] [--corvariance_matrix CORVARIANCE_MATRIX]
+                                [--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL]
+                                [--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
+                                [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
+                                [--p_value_filter P_VALUE_FILTER] [--fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER] [--ld_length LD_LENGTH]
 
 mandatory arguments:
   -p PROJECT_NAME, --project_name PROJECT_NAME
@@ -265,6 +265,9 @@ optional arguments:
 ```
 
 #### HAPPI_GWAS_chromosomewise.py
+
+In order to use HAPPI_GWAS_chromosomewise.py, the file name or file prefix of the vcf, genotype hapmap, genotype data,
+genotype map, kinship, and corvariance matrix files must be named using `chromosome`.
 
 ```
 usage: python3 HAPPI_GWAS_chromosomewise.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER -c CHROMOSOME -v VCF_FOLDER -x VCF_FILE_EXTENSION -g GFF_FILE [--gff_category GFF_CATEGORY] [--gff_key GFF_KEY]
@@ -397,6 +400,23 @@ python3 HAPPI_GWAS.py \
 -p Test \
 -w /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2 \
 -i /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
+-o /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLM \
+-v /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf/mdp_genotype_test.vcf.gz \
+-g /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
+--genotype_data /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_data/mdp_numeric.txt \
+--genotype_map /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_map/mdp_SNP_information.txt \
+--p_value_filter 0.01
+```
+
+```
+cd /path/to/HAPPI_GWAS_2
+
+conda activate happigwas
+
+python3 HAPPI_GWAS.py \
+-p Test \
+-w /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2 \
+-i /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
 -o /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLMM \
 -v /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf/mdp_genotype_test.vcf.gz \
 -g /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
@@ -450,12 +470,6 @@ python3 HAPPI_GWAS_chromosomewise.py \
 --genotype_hapmap_file_extension ".hmp.txt" \
 --keep_going \
 --p_value_filter 0.01
-```
-
-```
-cd /path/to/HAPPI_GWAS_2
-
-sbatch test_HAPPI_GWAS_MLMM_Arabidopsis1001_Chr1.sbatch
 ```
 
 ## Remarks

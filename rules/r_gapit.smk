@@ -66,11 +66,12 @@ rule r_gapit:
     input:
         in_file=os.path.join(os.path.abspath(input_folder),'{sample}.txt')
     params:
-        genotype_hapmap=genotype_hapmap,
-        genotype_data=genotype_data,
-        genotype_map=genotype_map,
-        kinship=kinship,
-        corvariance_matrix=corvariance_matrix,
+        sample='{sample}',
+        genotype_hapmap=os.path.abspath(str(genotype_hapmap)) if os.path.exists(os.path.abspath(str(genotype_hapmap))) else 'NULL',
+        genotype_data=os.path.abspath(str(genotype_data)) if os.path.exists(os.path.abspath(str(genotype_data))) else 'NULL',
+        genotype_map=os.path.abspath(str(genotype_map)) if os.path.exists(os.path.abspath(str(genotype_map))) else 'NULL',
+        kinship=os.path.abspath(str(kinship)) if os.path.exists(os.path.abspath(str(kinship))) else 'NULL',
+        corvariance_matrix=os.path.abspath(str(corvariance_matrix)) if os.path.exists(os.path.abspath(str(corvariance_matrix))) else 'NULL',
         snp_maf=snp_maf,
         model=model,
         pca_total=pca_total,
