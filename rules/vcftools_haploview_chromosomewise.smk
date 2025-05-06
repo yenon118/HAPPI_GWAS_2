@@ -10,7 +10,8 @@ workflow_path = config['workflow_path']
 input_file = config['input_file']
 output_folder = config['output_folder']
 
-vcf_file = config['vcf_file']
+vcf_folder = config['vcf_folder']
+vcf_file_extension = config['vcf_file_extension']
 
 ulimit = config['ulimit']
 memory = config['memory']
@@ -31,7 +32,8 @@ print("workflow_path: ",workflow_path)
 print("input_file: ",input_file)
 print("output_folder: ",output_folder)
 
-print("vcf_file: ",vcf_file)
+print("vcf_folder: ",vcf_folder)
+print("vcf_file_extension: ",vcf_file_extension)
 
 print("ulimit: ",ulimit)
 print("memory: ",memory)
@@ -52,7 +54,7 @@ rule all:
 ## Run VCFtools to subset and convert to plink in a snakemake rule
 rule vcftools_subset_and_convert_to_plink:
     params:
-        in_file=vcf_file,
+        in_file=lambda wildcards: os.path.join(os.path.abspath(str(vcf_folder)),str(wildcards.region.split("__")[0]) + str(vcf_file_extension)),
         chrom_start_end=lambda wildcards: wildcards.region.split("__"),
         output_prefix=os.path.join(os.path.abspath(output_folder),"VCFtools",'{region}'),
         out_folder=os.path.join(os.path.abspath(output_folder),"VCFtools"),

@@ -17,8 +17,9 @@ memory = config['memory']
 threads = config['threads']
 
 ## Extract samples from files in the input folder
-samples = [re.sub('(.txt)|(.csv)','',f) for f in os.listdir(input_folder) if
-           os.path.isfile(os.path.join(input_folder,f))]
+samples = [
+    re.sub('(.txt)|(.csv)','',f) for f in os.listdir(input_folder) if os.path.isfile(os.path.join(input_folder,f))
+]
 
 ## Print variables
 print("project_name: ",project_name)
@@ -60,5 +61,8 @@ rule r_blup:
     shell:
         """
         mkdir -p {params.out_folder};
-        Rscript {workflow_path}/scripts/R/BLUP.R -i {input.in_file} -o {params.out_folder} -e {params.feature_column_indexes} 2>&1 > {log}
+        Rscript {workflow_path}/scripts/R/BLUP.R \
+        -i {input.in_file} \
+        -o {params.out_folder} \
+        -e {params.feature_column_indexes} 2>&1 > {log};
         """

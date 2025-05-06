@@ -35,7 +35,6 @@ parser$add_argument("--genotype_map", type="character", default=NULL, help="Geno
 
 # Optional arguments
 parser$add_argument("--kinship", type="character", default=NULL, help="Kinship matrix file")
-parser$add_argument("--z_matrix", type="character", default=NULL, help="Z matrix file")
 parser$add_argument("--corvariance_matrix", type="character", default=NULL, help="Corvariance matrix file")
 
 parser$add_argument("--snp_maf", type="numeric", default=0.0, help="SNP minor allele frequency")
@@ -74,7 +73,6 @@ if (is.null(G) & is.null(GD) & is.null(GM)) {
 
 # Optional argument assignment
 KI <- args$kinship
-Z <- args$z_matrix
 CV <- args$corvariance_matrix
 SNP.MAF <- args$snp_maf
 model <- args$model
@@ -292,35 +290,6 @@ if (!is.null(KI)) {
 	print("Kinship matrix (KI) is set to NULL!!!")
 }
 
-if (!is.null(Z)) {
-	if (Z != "NULL") {
-		Z <- tryCatch({
-			read.table(
-				file = Z,
-				sep = "\t",
-				header = TRUE,
-				check.names = FALSE,
-				stringsAsFactors = FALSE
-			)
-		}, error = function(e) {
-			return(NULL)
-		})
-	} else {
-		Z <- NULL
-	}
-	if (!is.null(Z)) {
-		if (nrow(Z) > 0 & ncol(Z) > 0){
-			print("Z matrix (Z):")
-			print(head(Z))
-			print(dim(Z))
-		}
-	} else {
-		print("Z matrix (Z) is set to NULL!!!")
-	}
-} else {
-	print("Z matrix (Z) is set to NULL!!!")
-}
-
 if (!is.null(CV)) {
 	if (CV != "NULL") {
 		CV <- tryCatch({
@@ -378,7 +347,6 @@ gapit_result <- GAPIT(
 	GD = GD,
 	GM = GM,
 	KI = KI,
-	Z = Z,
 	CV = CV,
 	SNP.MAF = SNP.MAF,
 	model = model,

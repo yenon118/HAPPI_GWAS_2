@@ -7,7 +7,8 @@ The HAPPI_GWAS_2 is a pipeline built for genome-wide association study (GWAS).
 
 ## Requirements
 
-In order to run the HAPPI_GWAS_2, users need to install Miniconda and prepare the Miniconda environment in their computing systems.
+In order to run the HAPPI_GWAS_2, users need to install Miniconda and prepare the Miniconda environment in their
+computing systems.
 
 Miniconda can be downloaded from [https://docs.anaconda.com/free/miniconda/](https://docs.anaconda.com/free/miniconda/).
 
@@ -19,7 +20,8 @@ wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 
 To install Miniconda in a server or cluster, users can use the command below.
 
-Please remember to replace the _<installation_shell_script>_ with the actual Miniconda installation shell script. In our case, it is **Miniconda3-latest-Linux-x86_64.sh**.
+Please remember to replace the _<installation_shell_script>_ with the actual Miniconda installation shell script. In our
+case, it is **Miniconda3-latest-Linux-x86_64.sh**.
 
 Please also remember to replace the _<desired_new_directory>_ with an actual directory absolute path.
 
@@ -37,7 +39,8 @@ Please also remember to replace the _<desired_new_directory>_ with an actual dir
 <desired_new_directory>/bin/conda init bash
 ```
 
-Installation of the Miniconda is required, and Miniconda environment needs to be activated every time before running the HAPPI_GWAS pipeline.
+Installation of the Miniconda is required, and Miniconda environment needs to be activated every time before running the
+HAPPI_GWAS pipeline.
 
 Write a Conda configuration file (.condarc) before creating a Conda environment:
 
@@ -45,7 +48,8 @@ Write a Conda configuration file (.condarc) before creating a Conda environment:
 nano ~/.condarc
 ```
 
-Put the following text into the Conda configuration file (make sure you change _envs_dirs_ and _pkgs_dirs_) then save the file.
+Put the following text into the Conda configuration file (make sure you change _envs_dirs_ and _pkgs_dirs_) then save
+the file.
 
 Please make sure not use tab in this yaml file, use 4 spaces instead.
 
@@ -130,7 +134,9 @@ git clone https://github.com/yenon118/HAPPI_GWAS_2.git
 
 ## Usage
 
-The HAPPI_GWAS_2 pipeline is a command line based pipeline that can be ran on any Linux computing systems. It consists of BLUP.py for best linear unbiased prediction, BLUE.py for best linear unbiased estimation, and HAPPI_GWAS.py for GWAS, haploblock analysis, and candidate gene identification. The command and arguments of each tool are shown as below:
+The HAPPI_GWAS_2 pipeline is a command line based pipeline that can be ran on any Linux computing systems. It consists
+of BLUP.py for best linear unbiased prediction, BLUE.py for best linear unbiased estimation, and HAPPI_GWAS.py for GWAS,
+haploblock analysis, and candidate gene identification. The command and arguments of each tool are shown as below:
 
 #### BLUP.py
 
@@ -258,6 +264,84 @@ optional arguments:
                         LD length
 ```
 
+#### HAPPI_GWAS_chromosomewise.py
+
+```
+usage: python3 HAPPI_GWAS_chromosomewise.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER -c CHROMOSOME -v VCF_FOLDER -x VCF_FILE_EXTENSION -g GFF_FILE [--gff_category GFF_CATEGORY] [--gff_key GFF_KEY]
+                                                [--genotype_hapmap_folder GENOTYPE_HAPMAP_FOLDER] [--genotype_hapmap_file_extension GENOTYPE_HAPMAP_FILE_EXTENSION] [--genotype_data_folder GENOTYPE_DATA_FOLDER]
+                                                [--genotype_data_file_extension GENOTYPE_DATA_FILE_EXTENSION] [--genotype_map_folder GENOTYPE_MAP_FOLDER] [--genotype_map_file_extension GENOTYPE_MAP_FILE_EXTENSION]
+                                                [--kinship_folder KINSHIP_FOLDER] [--kinship_file_extension KINSHIP_FILE_EXTENSION] [--corvariance_matrix_folder CORVARIANCE_MATRIX_FOLDER]
+                                                [--corvariance_matrix_file_extension CORVARIANCE_MATRIX_FILE_EXTENSION] [--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL] [--ulimit ULIMIT] [--memory MEMORY]
+                                                [--threads THREADS] [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER] [--p_value_filter P_VALUE_FILTER] [--fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER]
+                                                [--multipletests_method MULTIPLETESTS_METHOD] [--multipletests_p_value_filter MULTIPLETESTS_P_VALUE_FILTER] [--ld_length LD_LENGTH]
+
+mandatory arguments:
+  -p PROJECT_NAME, --project_name PROJECT_NAME
+                        Project name
+  -w WORKFLOW_PATH, --workflow_path WORKFLOW_PATH
+                        Workflow path
+  -i INPUT_FOLDER, --input_folder INPUT_FOLDER
+                        Input folder
+  -o OUTPUT_FOLDER, --output_folder OUTPUT_FOLDER
+                        Output folder
+  -c CHROMOSOME, --chromosome CHROMOSOME
+                        Chromosome
+  -v VCF_FOLDER, --vcf_folder VCF_FOLDER
+                        VCF folder
+  -x VCF_FILE_EXTENSION, --vcf_file_extension VCF_FILE_EXTENSION
+                        VCF file extension
+  -g GFF_FILE, --gff_file GFF_FILE
+                        GFF file
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --gff_category GFF_CATEGORY
+                        GFF category
+  --gff_key GFF_KEY     GFF key
+  --genotype_hapmap_folder GENOTYPE_HAPMAP_FOLDER
+                        Genotype hapmap folder
+  --genotype_hapmap_file_extension GENOTYPE_HAPMAP_FILE_EXTENSION
+                        Genotype hapmap file extension
+  --genotype_data_folder GENOTYPE_DATA_FOLDER
+                        Genotype data folder
+  --genotype_data_file_extension GENOTYPE_DATA_FILE_EXTENSION
+                        Genotype data file extension
+  --genotype_map_folder GENOTYPE_MAP_FOLDER
+                        Genotype map folder
+  --genotype_map_file_extension GENOTYPE_MAP_FILE_EXTENSION
+                        Genotype map file extension
+  --kinship_folder KINSHIP_FOLDER
+                        Kinship matrix folder
+  --kinship_file_extension KINSHIP_FILE_EXTENSION
+                        Kinship matrix file extension
+  --corvariance_matrix_folder CORVARIANCE_MATRIX_FOLDER
+                        Corvariance matrix folder
+  --corvariance_matrix_file_extension CORVARIANCE_MATRIX_FILE_EXTENSION
+                        Corvariance matrix file extension
+  --snp_maf SNP_MAF     SNP minor allele frequency
+  --model MODEL         Model
+  --pca_total PCA_TOTAL
+                        Total PCA
+  --ulimit ULIMIT       Ulimit
+  --memory MEMORY       Memory
+  --threads THREADS     Threads
+  --keep_going          Keep going
+  --jobs JOBS           Jobs
+  --latency_wait LATENCY_WAIT
+                        Latency wait
+  --cluster CLUSTER     Cluster parameters
+  --p_value_filter P_VALUE_FILTER
+                        P-value filter
+  --fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER
+                        FDR corrected p-value filter
+  --multipletests_method MULTIPLETESTS_METHOD
+                        Multipletests method
+  --multipletests_p_value_filter MULTIPLETESTS_P_VALUE_FILTER
+                        Multipletests corrected p-value filter
+  --ld_length LD_LENGTH
+                        LD length
+```
+
 ## Examples
 
 These are a few basic examples which show you how to use the HAPPI_GWAS_2:
@@ -342,9 +426,39 @@ python3 HAPPI_GWAS.py \
 ```
 cd /path/to/HAPPI_GWAS_2
 
+conda activate happigwas
+
+python3 HAPPI_GWAS_chromosomewise.py \
+-p Test \
+-w /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2 \
+-i /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/raw_data_split \
+-o /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/output/HAPPI_GWAS_MLM_chromosomewise \
+-c 1 \
+-c 2 \
+-c 3 \
+-c 4 \
+-c 5 \
+-c 6 \
+-c 7 \
+-c 8 \
+-c 9 \
+-c 10 \
+-v /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/vcf_chromosomewise/ \
+-x ".vcf.gz" \
+-g /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/gff/Zea_mays.AGPv3.26.gff3 \
+--genotype_hapmap_folder /mnt/pixstor/joshitr-lab/chanye/projects/HAPPI_GWAS_2/data/Maize_example_data/genotype_hapmap_chromosomewise/ \
+--genotype_hapmap_file_extension ".hmp.txt" \
+--keep_going \
+--p_value_filter 0.01
+```
+
+```
+cd /path/to/HAPPI_GWAS_2
+
 sbatch test_HAPPI_GWAS_MLMM_Arabidopsis1001_Chr1.sbatch
 ```
 
 ## Remarks
 
-1. The execution time of the HAPPI_GWAS_2 pipeline mainly depends on the size of the data and the available computing resources on the machine.
+1. The execution time of the HAPPI_GWAS_2 pipeline mainly depends on the size of the data and the available computing
+   resources on the machine.

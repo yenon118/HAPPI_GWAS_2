@@ -15,7 +15,6 @@ genotype_data = config['genotype_data']
 genotype_map = config['genotype_map']
 
 kinship = config['kinship']
-z_matrix = config['z_matrix']
 corvariance_matrix = config['corvariance_matrix']
 
 snp_maf = config['snp_maf']
@@ -27,8 +26,9 @@ memory = config['memory']
 threads = config['threads']
 
 ## Extract samples from files in the input folder
-samples = [re.sub('(.txt)|(.csv)','',f) for f in os.listdir(input_folder) if
-           os.path.isfile(os.path.join(input_folder,f))]
+samples = [
+    re.sub('(.txt)|(.csv)','',f) for f in os.listdir(input_folder) if os.path.isfile(os.path.join(input_folder,f))
+]
 
 ## Print variables
 print("project_name: ",project_name)
@@ -42,7 +42,6 @@ print("genotype_data: ",genotype_data)
 print("genotype_map: ",genotype_map)
 
 print("kinship: ",kinship)
-print("z_matrix: ",z_matrix)
 print("corvariance_matrix: ",corvariance_matrix)
 
 print("snp_maf: ",snp_maf)
@@ -71,7 +70,6 @@ rule r_gapit:
         genotype_data=genotype_data,
         genotype_map=genotype_map,
         kinship=kinship,
-        z_matrix=z_matrix,
         corvariance_matrix=corvariance_matrix,
         snp_maf=snp_maf,
         model=model,
@@ -88,5 +86,15 @@ rule r_gapit:
     shell:
         """
         mkdir -p {params.out_folder};
-        Rscript {workflow_path}/scripts/R/GAPIT.R -i {input.in_file} -o {params.out_folder} --genotype_hapmap {params.genotype_hapmap} --genotype_data {params.genotype_data} --genotype_map {params.genotype_map} --kinship {params.kinship} --z_matrix {params.z_matrix} --corvariance_matrix {params.corvariance_matrix} --snp_maf {params.snp_maf} --model {params.model} --pca_total {params.pca_total} | tee {log} {output.out_file}
+        Rscript {workflow_path}/scripts/R/GAPIT.R \
+        -i {input.in_file} \
+        -o {params.out_folder} \
+        --genotype_hapmap {params.genotype_hapmap} \
+        --genotype_data {params.genotype_data} \
+        --genotype_map {params.genotype_map} \
+        --kinship {params.kinship} \
+        --corvariance_matrix {params.corvariance_matrix} \
+        --snp_maf {params.snp_maf} \
+        --model {params.model} \
+        --pca_total {params.pca_total} | tee {log} {output.out_file};
         """

@@ -25,18 +25,26 @@ def main(args):
     input_folder = args.input_folder
     output_folder = args.output_folder
 
-    vcf_file = args.vcf_file
+    chromosome_array = args.chromosome
+
+    vcf_folder = args.vcf_folder
+    vcf_file_extension = args.vcf_file_extension
 
     gff_file = args.gff_file
     gff_category = args.gff_category
     gff_key = args.gff_key
 
-    genotype_hapmap = args.genotype_hapmap
-    genotype_data = args.genotype_data
-    genotype_map = args.genotype_map
+    genotype_hapmap_folder = args.genotype_hapmap_folder
+    genotype_hapmap_file_extension = args.genotype_hapmap_file_extension
+    genotype_data_folder = args.genotype_data_folder
+    genotype_data_file_extension = args.genotype_data_file_extension
+    genotype_map_folder = args.genotype_map_folder
+    genotype_map_file_extension = args.genotype_map_file_extension
 
-    kinship = args.kinship
-    corvariance_matrix = args.corvariance_matrix
+    kinship_folder = args.kinship_folder
+    kinship_file_extension = args.kinship_file_extension
+    corvariance_matrix_folder = args.corvariance_matrix_folder
+    corvariance_matrix_file_extension = args.corvariance_matrix_file_extension
 
     snp_maf = args.snp_maf
     model = args.model
@@ -90,15 +98,34 @@ def main(args):
         print('Input folder does not exist!!!')
         sys.exit(1)
 
-    # VCF file checking
-    if vcf_file is None:
-        print('VCF file is missing!!!')
+    # Chromosome array checking
+    if chromosome_array is None:
+        print('Chromosome array is missing!!!')
         sys.exit(1)
-    if vcf_file == '':
-        print('VCF file is missing!!!')
+    if not isinstance(chromosome_array, list):
+        print('Chromosome array is missing!!!')
         sys.exit(1)
-    if not vcf_file.exists():
-        print('VCF file does not exist!!!')
+    if len(chromosome_array) < 1:
+        print('Chromosome array is missing!!!')
+        sys.exit(1)
+
+    # VCF folder checking
+    if vcf_folder is None:
+        print('VCF folder is missing!!!')
+        sys.exit(1)
+    if vcf_folder == '':
+        print('VCF folder is missing!!!')
+        sys.exit(1)
+    if not vcf_folder.exists():
+        print('VCF folder does not exist!!!')
+        sys.exit(1)
+
+    # VCF file extension checking
+    if vcf_file_extension is None:
+        print('VCF file extension is missing!!!')
+        sys.exit(1)
+    if vcf_file_extension == '':
+        print('VCF file extension is missing!!!')
         sys.exit(1)
 
     # GFF file checking
@@ -113,33 +140,14 @@ def main(args):
         sys.exit(1)
 
     # At-least-one arguments checking
-    if genotype_hapmap != 'NULL':
-        try:
-            genotype_hapmap = pathlib.Path(genotype_hapmap)
-            if not genotype_hapmap.exists():
-                genotype_hapmap = 'NULL'
-        except Exception as e:
-            genotype_hapmap = 'NULL'
-            print(e)
-    if genotype_data != 'NULL':
-        try:
-            genotype_data = pathlib.Path(genotype_data)
-            if not genotype_data.exists():
-                genotype_data = 'NULL'
-        except Exception as e:
-            genotype_data = 'NULL'
-            print(e)
-    if genotype_map != 'NULL':
-        try:
-            genotype_map = pathlib.Path(genotype_map)
-            if not genotype_map.exists():
-                genotype_map = 'NULL'
-        except Exception as e:
-            genotype_map = 'NULL'
-            print(e)
-    if genotype_hapmap == 'NULL' and genotype_data == 'NULL' and genotype_map == 'NULL':
-        print('Genotype hapmap, genotype data, and genotype map are not provided!!!')
-        sys.exit(1)
+    if genotype_hapmap_folder:
+        pass
+    else:
+        if genotype_data_folder and genotype_map_folder:
+            pass
+        else:
+            print('Genotype hapmap, genotype data, and genotype map are not provided!!!')
+            sys.exit(1)
 
     #######################################################################
     # Check if output parent folder exists
@@ -193,14 +201,22 @@ def main(args):
     #######################################################################
     gapit_config_data = {
         "project_name": project_name,
-        "workflow_path": str(workflow_path),
-        "input_folder": str(input_folder),
-        "output_folder": str(gapit_output_folder),
-        "genotype_hapmap": str(genotype_hapmap),
-        "genotype_data": str(genotype_data),
-        "genotype_map": str(genotype_map),
-        "kinship": kinship,
-        "corvariance_matrix": corvariance_matrix,
+        "workflow_path": str(workflow_path) if workflow_path is not None else None,
+        "input_folder": str(input_folder) if input_folder is not None else None,
+        "output_folder": str(gapit_output_folder) if gapit_output_folder is not None else None,
+        "chromosome_array": chromosome_array,
+        "vcf_folder": str(vcf_folder) if vcf_folder is not None else None,
+        "vcf_file_extension": vcf_file_extension,
+        "genotype_hapmap_folder": str(genotype_hapmap_folder) if genotype_hapmap_folder is not None else None,
+        "genotype_hapmap_file_extension": genotype_hapmap_file_extension,
+        "genotype_data_folder": str(genotype_data_folder) if genotype_data_folder is not None else None,
+        "genotype_data_file_extension": genotype_data_file_extension,
+        "genotype_map_folder": str(genotype_map_folder) if genotype_map_folder is not None else None,
+        "genotype_map_file_extension": genotype_map_file_extension,
+        "kinship_folder": str(kinship_folder) if kinship_folder is not None else None,
+        "kinship_file_extension": kinship_file_extension,
+        "corvariance_matrix_folder": str(corvariance_matrix_folder) if corvariance_matrix_folder is not None else None,
+        "corvariance_matrix_file_extension": corvariance_matrix_file_extension,
         "snp_maf": snp_maf,
         "model": model,
         "pca_total": pca_total,
@@ -222,7 +238,7 @@ def main(args):
         '--jobs', str(jobs),
         '--latency-wait', str(latency_wait),
         '--printshellcmds',
-        '--snakefile', str(workflow_path.joinpath('rules', 'r_gapit.smk')),
+        '--snakefile', str(workflow_path.joinpath('rules', 'r_gapit_chromosomewise.smk')),
         '--configfile', str(gapit_output_folder.joinpath('Snakemake_GAPIT_config.json'))
     ]
 
@@ -286,43 +302,40 @@ def main(args):
     mode = 'w'
     # Find GAPIT results files
     if gapit_output_folder.exists():
-        gapit_auto_output_folder = gapit_output_folder.joinpath('GAPIT_auto_output')
-        if gapit_auto_output_folder.exists():
-            gwas_result_files = list(gapit_auto_output_folder.glob('GAPIT.Association.GWAS_Results*.csv'))
-            gwas_result_files.sort()
-            if len(gwas_result_files) > 0:
-                for i in range(len(gwas_result_files)):
-                    # Read GWAS result file
-                    dat = pd.read_csv(filepath_or_buffer=gwas_result_files[i])
-                    # Extract the trait from filename
-                    trait = re.sub(
-                        "(GAPIT.Association.GWAS_Results.)|(.csv)",
-                        "",
-                        str(gwas_result_files[i].name)
-                    )
-                    trait = trait.replace(model, '')
-                    trait = trait.lstrip('\\.')
-                    # Add model, trait, ld_number, ld_start, and ld_end columns
-                    dat['Model'] = model
-                    dat['Trait'] = trait
-                    dat["LD_length"] = ld_length
-                    dat["LD_start"] = dat["Pos"] - ld_length
-                    dat["LD_end"] = dat["Pos"] + ld_length
-                    dat.loc[dat.LD_start < 0, 'LD_start'] = 0
-                    # Check if data is not empty
-                    if dat.shape[0] > 0 and dat.shape[1] > 0:
-                        # Write to one output file to append all data
-                        dat.to_csv(path_or_buf=gapit_gwas_result_file, sep='\t', mode=mode, header=header, index=False)
-                        # Change parameters to make sure data append
-                        if header:
-                            header = False
-                        if mode == 'w':
-                            mode = 'a'
-            else:
-                print("No GAPIT GWAS result was created in the analysis!!!")
-                sys.exit(1)
+        gwas_result_files = list(
+            gapit_output_folder.glob(os.path.join('*', 'GAPIT_auto_output', 'GAPIT.Association.GWAS_Results*.csv'))
+        )
+        gwas_result_files.sort()
+        if len(gwas_result_files) > 0:
+            for i in range(len(gwas_result_files)):
+                # Read GWAS result file
+                dat = pd.read_csv(filepath_or_buffer=gwas_result_files[i])
+                # Extract the trait from filename
+                trait = re.sub(
+                    "(GAPIT.Association.GWAS_Results.)|(.csv)",
+                    "",
+                    str(gwas_result_files[i].name)
+                )
+                trait = trait.replace(model, '')
+                trait = trait.lstrip('\\.')
+                # Add model, trait, ld_number, ld_start, and ld_end columns
+                dat['Model'] = model
+                dat['Trait'] = trait
+                dat["LD_length"] = ld_length
+                dat["LD_start"] = dat["Pos"] - ld_length
+                dat["LD_end"] = dat["Pos"] + ld_length
+                dat.loc[dat.LD_start < 0, 'LD_start'] = 0
+                # Check if data is not empty
+                if dat.shape[0] > 0 and dat.shape[1] > 0:
+                    # Write to one output file to append all data
+                    dat.to_csv(path_or_buf=gapit_gwas_result_file, sep='\t', mode=mode, header=header, index=False)
+                    # Change parameters to make sure data append
+                    if header:
+                        header = False
+                    if mode == 'w':
+                        mode = 'a'
         else:
-            print("No GAPIT auto output folder was created in the analysis!!!")
+            print("No GAPIT GWAS result was created in the analysis!!!")
             sys.exit(1)
     else:
         print("Output folder does not exists!!!")
@@ -344,7 +357,8 @@ def main(args):
             # Write multipletests_method into the data table
             dat["Multipletests_Method"] = multipletests_method
             # Compute for adjusted p-values
-            dat['Multipletests_Adjusted_P_Value'] = dat.groupby(['Model', 'Trait'], group_keys=False)[['P.value']].apply(
+            dat['Multipletests_Adjusted_P_Value'] = dat.groupby(['Model', 'Trait'], group_keys=False)[
+                ['P.value']].apply(
                 lambda g: pd.Series(multipletests(g['P.value'], method=multipletests_method)[1], index=g.index),
                 include_groups=False
             )
@@ -397,17 +411,23 @@ def main(args):
     #######################################################################
     vcftools_haploview_config_data = {
         "project_name": project_name,
-        "workflow_path": str(workflow_path),
-        "input_file": str(gapit_gwas_result_ld_region_file),
-        "output_folder": str(vcftools_haploview_output_folder),
-        "vcf_file": str(vcf_file),
+        "workflow_path": str(workflow_path) if workflow_path is not None else None,
+        "input_file": str(gapit_gwas_result_ld_region_file) if gapit_gwas_result_ld_region_file is not None else None,
+        "output_folder": str(
+            vcftools_haploview_output_folder
+        ) if vcftools_haploview_output_folder is not None else None,
+        "vcf_folder": str(vcf_folder) if vcf_folder is not None else None,
+        "vcf_file_extension": vcf_file_extension,
         "ulimit": ulimit,
         "memory": memory,
         "threads": threads
     }
 
-    with open(vcftools_haploview_output_folder.joinpath("Snakemake_VCFtools_Haploview_config.json"), 'w',
-              encoding='utf-8') as writer:
+    with open(
+            vcftools_haploview_output_folder.joinpath("Snakemake_VCFtools_Haploview_config.json"),
+            'w',
+            encoding='utf-8'
+    ) as writer:
         json.dump(vcftools_haploview_config_data, writer, ensure_ascii=False, indent=4)
 
     #######################################################################
@@ -420,7 +440,7 @@ def main(args):
         '--jobs', str(jobs),
         '--latency-wait', str(latency_wait),
         '--printshellcmds',
-        '--snakefile', str(workflow_path.joinpath('rules', 'vcftools_haploview.smk')),
+        '--snakefile', str(workflow_path.joinpath('rules', 'vcftools_haploview_chromosomewise.smk')),
         '--configfile', str(vcftools_haploview_output_folder.joinpath('Snakemake_VCFtools_Haploview_config.json'))
     ]
 
@@ -542,7 +562,8 @@ def main(args):
                         if len(line_array) > 1:
                             haploblock_start_index = int(float(line_array[0])) - 1
                             haploblock_end_index = int(float(line_array[(len(line_array) - 1)])) - 1
-                            if (haploblock_start_index > -1) and (haploblock_end_index > -1) and (haploblock_start_index < haploblock_end_index):
+                            if (haploblock_start_index > -1) and (haploblock_end_index > -1) and (
+                                    haploblock_start_index < haploblock_end_index):
                                 haploblock_start = recode_vcf_position_array[haploblock_start_index]
                                 haploblock_end = recode_vcf_position_array[haploblock_end_index]
                                 haploblock_start_array.append(haploblock_start)
@@ -578,7 +599,8 @@ def main(args):
 
     # Create GWAS results file with haploblock data
     vcftools_haploview_gwas_result_file = vcftools_haploview_output_folder.joinpath(
-        "GAPIT.Association.GWAS_Results." + str(model) + ".All.txt")
+        "GAPIT.Association.GWAS_Results." + str(model) + ".All.txt"
+    )
 
     f_hdl = open(vcftools_haploview_gwas_result_file, "w")
 
@@ -597,7 +619,8 @@ def main(args):
                     # Match chromosome
                     if line_array[1] == haplotype_blocks_data_array[i][0]:
                         # Check if marker position is within haplotyle block region
-                        if int(float(haplotype_blocks_data_array[i][3])) <= int(float(line_array[2])) <= int(float(haplotype_blocks_data_array[i][4])):
+                        if int(float(haplotype_blocks_data_array[i][3])) <= int(float(line_array[2])) <= int(
+                                float(haplotype_blocks_data_array[i][4])):
                             haploblock_start = haplotype_blocks_data_array[i][3]
                             haploblock_end = haplotype_blocks_data_array[i][4]
                             break
@@ -647,29 +670,41 @@ def main(args):
                     if line_array[1] == gff_data_array[i][0]:
                         # Check if haplotype block region exists
                         if (line_array[15] != '') and (line_array[16] != ''):
-                            if (int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(float(gff_data_array[i][4]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(float(gff_data_array[i][4]))):
+                            if (int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(
+                                    float(gff_data_array[i][4]))) and (
+                                    int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(
+                                float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Full"
-                            if (overlap_strategy != "Full") and (int(float(line_array[15])) < int(float(gff_data_array[i][3]))) and (int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(float(gff_data_array[i][4]))):
+                            if (overlap_strategy != "Full") and (
+                                    int(float(line_array[15])) < int(float(gff_data_array[i][3]))) and (
+                                    int(float(gff_data_array[i][3])) <= int(float(line_array[16])) <= int(
+                                float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Partial"
-                            if (overlap_strategy != "Full") and (int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(float(gff_data_array[i][4]))) and (int(float(line_array[16])) > int(float(gff_data_array[i][4]))):
+                            if (overlap_strategy != "Full") and (
+                                    int(float(gff_data_array[i][3])) <= int(float(line_array[15])) <= int(
+                                float(gff_data_array[i][4]))) and (
+                                    int(float(line_array[16])) > int(float(gff_data_array[i][4]))):
                                 gene_start = gff_data_array[i][3]
                                 gene_end = gff_data_array[i][4]
                                 gene_id = gff_data_array[i][8]
                                 overlap_strategy = "Partial"
                         # Check if marker position is within GFF region
-                        if (overlap_strategy == "") and (int(float(gff_data_array[i][3])) <= int(float(line_array[2])) <= int(float(gff_data_array[i][4]))):
+                        if (overlap_strategy == "") and (
+                                int(float(gff_data_array[i][3])) <= int(float(line_array[2])) <= int(
+                            float(gff_data_array[i][4]))):
                             gene_start = gff_data_array[i][3]
                             gene_end = gff_data_array[i][4]
                             gene_id = gff_data_array[i][8]
                             overlap_strategy = "Marker"
 
-            line = line + "\t" + str(gene_start) + "\t" + str(gene_end) + "\t" + str(gene_id) + "\t" + str(overlap_strategy) + "\n"
+            line = line + "\t" + str(gene_start) + "\t" + str(gene_end) + "\t" + str(gene_id) + "\t" + str(
+                overlap_strategy) + "\n"
             f_hdl.write(line)
 
     f_hdl.close()
@@ -687,18 +722,66 @@ if __name__ == "__main__":
     parser.add_argument('-i', '--input_folder', help='Input folder', type=pathlib.Path, required=True)
     parser.add_argument('-o', '--output_folder', help='Output folder', type=pathlib.Path, required=True)
 
-    parser.add_argument('-v', '--vcf_file', help='VCF file', type=pathlib.Path, required=True)
+    parser.add_argument('-c', '--chromosome', help='Chromosome', type=str, action='append', required=True)
+
+    parser.add_argument('-v', '--vcf_folder', help='VCF folder', type=pathlib.Path, required=True)
+    parser.add_argument('-x', '--vcf_file_extension', help='VCF file extension', type=str, required=True)
 
     parser.add_argument('-g', '--gff_file', help='GFF file', type=pathlib.Path, required=True)
     parser.add_argument('--gff_category', help='GFF category', type=str, default='gene')
     parser.add_argument('--gff_key', help='GFF key', type=str, default='ID')
 
-    parser.add_argument('--genotype_hapmap', default='NULL', help='Genotype hapmap', type=str)
-    parser.add_argument('--genotype_data', default='NULL', help='Genotype data', type=str)
-    parser.add_argument('--genotype_map', default='NULL', help='Genotype map', type=str)
+    parser.add_argument(
+        '--genotype_hapmap_folder',
+        help='Genotype hapmap folder',
+        type=pathlib.Path
+    )
+    parser.add_argument(
+        '--genotype_hapmap_file_extension',
+        help='Genotype hapmap file extension',
+        type=str
+    )
+    parser.add_argument(
+        '--genotype_data_folder',
+        help='Genotype data folder',
+        type=pathlib.Path
+    )
+    parser.add_argument(
+        '--genotype_data_file_extension',
+        help='Genotype data file extension',
+        type=str
+    )
+    parser.add_argument(
+        '--genotype_map_folder',
+        help='Genotype map folder',
+        type=pathlib.Path
+    )
+    parser.add_argument(
+        '--genotype_map_file_extension',
+        help='Genotype map file extension',
+        type=str
+    )
 
-    parser.add_argument('--kinship', default='NULL', type=str, help='Kinship matrix file')
-    parser.add_argument('--corvariance_matrix', default='NULL', type=str, help='Corvariance matrix file')
+    parser.add_argument(
+        '--kinship_folder',
+        type=pathlib.Path,
+        help='Kinship matrix folder'
+    )
+    parser.add_argument(
+        '--kinship_file_extension',
+        type=str,
+        help='Kinship matrix file extension'
+    )
+    parser.add_argument(
+        '--corvariance_matrix_folder',
+        type=pathlib.Path,
+        help='Corvariance matrix folder'
+    )
+    parser.add_argument(
+        '--corvariance_matrix_file_extension',
+        type=str,
+        help='Corvariance matrix file extension'
+    )
     parser.add_argument('--snp_maf', default=0.0, type=float, help='SNP minor allele frequency')
     parser.add_argument('--model', default='MLM', type=str, help='Model')
     parser.add_argument('--pca_total', default=0, type=int, help='Total PCA')
@@ -713,9 +796,24 @@ if __name__ == "__main__":
     parser.add_argument('--cluster', default='', type=str, help='Cluster parameters')
 
     parser.add_argument('--p_value_filter', default=1.0, type=float, help='P-value filter')
-    parser.add_argument('--fdr_corrected_p_value_filter', default=1.0, type=float, help='FDR corrected p-value filter')
-    parser.add_argument('--multipletests_method', default='fdr_bh', type=str, help='Multipletests method')
-    parser.add_argument('--multipletests_p_value_filter', default=1.0, type=float, help='Multipletests corrected p-value filter')
+    parser.add_argument(
+        '--fdr_corrected_p_value_filter',
+        default=1.0,
+        type=float,
+        help='FDR corrected p-value filter'
+    )
+    parser.add_argument(
+        '--multipletests_method',
+        default='fdr_bh',
+        type=str,
+        help='Multipletests method'
+    )
+    parser.add_argument(
+        '--multipletests_p_value_filter',
+        default=1.0,
+        type=float,
+        help='Multipletests corrected p-value filter'
+    )
     parser.add_argument('--ld_length', default=10000, type=int, help='LD length')
 
     args = parser.parse_args()
