@@ -36,7 +36,7 @@ def main(args):
     genotype_map = args.genotype_map
 
     kinship = args.kinship
-    corvariance_matrix = args.corvariance_matrix
+    covariance_matrix = args.covariance_matrix
 
     snp_maf = args.snp_maf
     model = args.model
@@ -181,7 +181,7 @@ def main(args):
         "genotype_data": str(genotype_data) if genotype_data is not None else None,
         "genotype_map": str(genotype_map) if genotype_map is not None else None,
         "kinship": str(kinship) if kinship is not None else None,
-        "corvariance_matrix": str(corvariance_matrix) if corvariance_matrix is not None else None,
+        "covariance_matrix": str(covariance_matrix) if covariance_matrix is not None else None,
         "snp_maf": snp_maf,
         "model": model,
         "pca_total": pca_total,
@@ -697,7 +697,7 @@ if __name__ == "__main__":
     parser.add_argument('--genotype_map', help='Genotype map', type=pathlib.Path)
 
     parser.add_argument('--kinship', type=pathlib.Path, help='Kinship matrix file')
-    parser.add_argument('--corvariance_matrix', type=pathlib.Path, help='Corvariance matrix file')
+    parser.add_argument('--covariance_matrix', type=pathlib.Path, help='Covariance matrix file')
     parser.add_argument('--snp_maf', default=0.0, type=float, help='SNP minor allele frequency')
     parser.add_argument('--model', default='MLM', type=str, help='Model')
     parser.add_argument('--pca_total', default=0, type=int, help='Total PCA')

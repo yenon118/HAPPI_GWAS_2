@@ -205,7 +205,7 @@ optional arguments:
 ```
 usage: python3 HAPPI_GWAS.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER -v VCF_FILE -g GFF_FILE [--gff_category GFF_CATEGORY] [--gff_key GFF_KEY]
                                 [--genotype_hapmap GENOTYPE_HAPMAP] [--genotype_data GENOTYPE_DATA] [--genotype_map GENOTYPE_MAP]
-                                [--kinship KINSHIP] [--z_matrix Z_MATRIX] [--corvariance_matrix CORVARIANCE_MATRIX]
+                                [--kinship KINSHIP] [--z_matrix Z_MATRIX] [--covariance_matrix COVARIANCE_MATRIX]
                                 [--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL]
                                 [--ulimit ULIMIT] [--memory MEMORY] [--threads THREADS]
                                 [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER]
@@ -238,8 +238,8 @@ optional arguments:
                         Genotype map
   --kinship KINSHIP     Kinship matrix file
   --z_matrix Z_MATRIX   Z matrix file
-  --corvariance_matrix CORVARIANCE_MATRIX
-                        Corvariance matrix file
+  --covariance_matrix COVARIANCE_MATRIX
+                        Covariance matrix file
   --snp_maf SNP_MAF     SNP minor allele frequency
   --model MODEL         Model
   --pca_total PCA_TOTAL
@@ -266,15 +266,16 @@ optional arguments:
 
 #### HAPPI_GWAS_chromosomewise.py
 
-In order to use HAPPI_GWAS_chromosomewise.py, the file name or file prefix of the vcf, genotype hapmap, genotype data,
-genotype map, kinship, and corvariance matrix files must be named using `chromosome`.
+In order to use HAPPI_GWAS_chromosomewise.py, the file names or file prefixes of the vcf, genotype hapmap, genotype
+data, genotype map, kinship, and covariance matrix files must be separated by `chromosome` and named using
+`chromosome`.
 
 ```
 usage: python3 HAPPI_GWAS_chromosomewise.py [-h] -p PROJECT_NAME -w WORKFLOW_PATH -i INPUT_FOLDER -o OUTPUT_FOLDER -c CHROMOSOME -v VCF_FOLDER -x VCF_FILE_EXTENSION -g GFF_FILE [--gff_category GFF_CATEGORY] [--gff_key GFF_KEY]
                                                 [--genotype_hapmap_folder GENOTYPE_HAPMAP_FOLDER] [--genotype_hapmap_file_extension GENOTYPE_HAPMAP_FILE_EXTENSION] [--genotype_data_folder GENOTYPE_DATA_FOLDER]
                                                 [--genotype_data_file_extension GENOTYPE_DATA_FILE_EXTENSION] [--genotype_map_folder GENOTYPE_MAP_FOLDER] [--genotype_map_file_extension GENOTYPE_MAP_FILE_EXTENSION]
-                                                [--kinship_folder KINSHIP_FOLDER] [--kinship_file_extension KINSHIP_FILE_EXTENSION] [--corvariance_matrix_folder CORVARIANCE_MATRIX_FOLDER]
-                                                [--corvariance_matrix_file_extension CORVARIANCE_MATRIX_FILE_EXTENSION] [--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL] [--ulimit ULIMIT] [--memory MEMORY]
+                                                [--kinship_folder KINSHIP_FOLDER] [--kinship_file_extension KINSHIP_FILE_EXTENSION] [--covariance_matrix_folder COVARIANCE_MATRIX_FOLDER]
+                                                [--covariance_matrix_file_extension COVARIANCE_MATRIX_FILE_EXTENSION] [--snp_maf SNP_MAF] [--model MODEL] [--pca_total PCA_TOTAL] [--ulimit ULIMIT] [--memory MEMORY]
                                                 [--threads THREADS] [--keep_going] [--jobs JOBS] [--latency_wait LATENCY_WAIT] [--cluster CLUSTER] [--p_value_filter P_VALUE_FILTER] [--fdr_corrected_p_value_filter FDR_CORRECTED_P_VALUE_FILTER]
                                                 [--multipletests_method MULTIPLETESTS_METHOD] [--multipletests_p_value_filter MULTIPLETESTS_P_VALUE_FILTER] [--ld_length LD_LENGTH]
 
@@ -317,10 +318,10 @@ optional arguments:
                         Kinship matrix folder
   --kinship_file_extension KINSHIP_FILE_EXTENSION
                         Kinship matrix file extension
-  --corvariance_matrix_folder CORVARIANCE_MATRIX_FOLDER
-                        Corvariance matrix folder
-  --corvariance_matrix_file_extension CORVARIANCE_MATRIX_FILE_EXTENSION
-                        Corvariance matrix file extension
+  --covariance_matrix_folder COVARIANCE_MATRIX_FOLDER
+                        Covariance matrix folder
+  --covariance_matrix_file_extension COVARIANCE_MATRIX_FILE_EXTENSION
+                        Covariance matrix file extension
   --snp_maf SNP_MAF     SNP minor allele frequency
   --model MODEL         Model
   --pca_total PCA_TOTAL

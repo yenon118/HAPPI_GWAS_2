@@ -43,8 +43,8 @@ def main(args):
 
     kinship_folder = args.kinship_folder
     kinship_file_extension = args.kinship_file_extension
-    corvariance_matrix_folder = args.corvariance_matrix_folder
-    corvariance_matrix_file_extension = args.corvariance_matrix_file_extension
+    covariance_matrix_folder = args.covariance_matrix_folder
+    covariance_matrix_file_extension = args.covariance_matrix_file_extension
 
     snp_maf = args.snp_maf
     model = args.model
@@ -215,8 +215,8 @@ def main(args):
         "genotype_map_file_extension": genotype_map_file_extension,
         "kinship_folder": str(kinship_folder) if kinship_folder is not None else None,
         "kinship_file_extension": kinship_file_extension,
-        "corvariance_matrix_folder": str(corvariance_matrix_folder) if corvariance_matrix_folder is not None else None,
-        "corvariance_matrix_file_extension": corvariance_matrix_file_extension,
+        "covariance_matrix_folder": str(covariance_matrix_folder) if covariance_matrix_folder is not None else None,
+        "covariance_matrix_file_extension": covariance_matrix_file_extension,
         "snp_maf": snp_maf,
         "model": model,
         "pca_total": pca_total,
@@ -773,14 +773,14 @@ if __name__ == "__main__":
         help='Kinship matrix file extension'
     )
     parser.add_argument(
-        '--corvariance_matrix_folder',
+        '--covariance_matrix_folder',
         type=pathlib.Path,
-        help='Corvariance matrix folder'
+        help='Covariance matrix folder'
     )
     parser.add_argument(
-        '--corvariance_matrix_file_extension',
+        '--covariance_matrix_file_extension',
         type=str,
-        help='Corvariance matrix file extension'
+        help='Covariance matrix file extension'
     )
     parser.add_argument('--snp_maf', default=0.0, type=float, help='SNP minor allele frequency')
     parser.add_argument('--model', default='MLM', type=str, help='Model')

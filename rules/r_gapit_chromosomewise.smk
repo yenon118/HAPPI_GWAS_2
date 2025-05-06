@@ -24,8 +24,8 @@ genotype_map_file_extension = config['genotype_map_file_extension']
 
 kinship_folder = config['kinship_folder']
 kinship_file_extension = config['kinship_file_extension']
-corvariance_matrix_folder = config['corvariance_matrix_folder']
-corvariance_matrix_file_extension = config['corvariance_matrix_file_extension']
+covariance_matrix_folder = config['covariance_matrix_folder']
+covariance_matrix_file_extension = config['covariance_matrix_file_extension']
 
 snp_maf = config['snp_maf']
 model = config['model']
@@ -61,8 +61,8 @@ print("genotype_map_file_extension: ",genotype_map_file_extension)
 
 print("kinship_folder: ",kinship_folder)
 print("kinship_file_extension: ",kinship_file_extension)
-print("corvariance_matrix_folder: ",corvariance_matrix_folder)
-print("corvariance_matrix_file_extension: ",corvariance_matrix_file_extension)
+print("covariance_matrix_folder: ",covariance_matrix_folder)
+print("covariance_matrix_file_extension: ",covariance_matrix_file_extension)
 
 print("snp_maf: ",snp_maf)
 print("model: ",model)
@@ -93,7 +93,7 @@ rule r_gapit:
         genotype_data=lambda wildcards: os.path.join(os.path.abspath(str(genotype_data_folder)),str(wildcards.chromosome) + str(genotype_data_file_extension)) if os.path.exists(os.path.join(os.path.abspath(str(genotype_data_folder)),str(wildcards.chromosome) + str(genotype_data_file_extension))) else 'NULL',
         genotype_map=lambda wildcards: os.path.join(os.path.abspath(str(genotype_map_folder)),str(wildcards.chromosome) + str(genotype_map_file_extension)) if os.path.exists(os.path.join(os.path.abspath(str(genotype_map_folder)),str(wildcards.chromosome) + str(genotype_map_file_extension))) else 'NULL',
         kinship=lambda wildcards: os.path.join(os.path.abspath(str(kinship_folder)),str(wildcards.chromosome) + str(kinship_file_extension)) if os.path.exists(os.path.join(os.path.abspath(str(kinship_folder)),str(wildcards.chromosome) + str(kinship_file_extension))) else 'NULL',
-        corvariance_matrix=lambda wildcards: os.path.join(os.path.abspath(str(corvariance_matrix_folder)),str(wildcards.chromosome) + str(corvariance_matrix_file_extension)) if os.path.exists(os.path.join(os.path.abspath(str(corvariance_matrix_folder)),str(wildcards.chromosome) + str(corvariance_matrix_file_extension))) else 'NULL',
+        covariance_matrix=lambda wildcards: os.path.join(os.path.abspath(str(covariance_matrix_folder)),str(wildcards.chromosome) + str(covariance_matrix_file_extension)) if os.path.exists(os.path.join(os.path.abspath(str(covariance_matrix_folder)),str(wildcards.chromosome) + str(covariance_matrix_file_extension))) else 'NULL',
         snp_maf=snp_maf,
         model=model,
         pca_total=pca_total,
@@ -116,7 +116,7 @@ rule r_gapit:
         --genotype_data {params.genotype_data} \
         --genotype_map {params.genotype_map} \
         --kinship {params.kinship} \
-        --corvariance_matrix {params.corvariance_matrix} \
+        --covariance_matrix {params.covariance_matrix} \
         --snp_maf {params.snp_maf} \
         --model {params.model} \
         --pca_total {params.pca_total} | tee {log} {output.out_file};

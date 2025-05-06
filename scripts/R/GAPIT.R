@@ -35,7 +35,7 @@ parser$add_argument("--genotype_map", type="character", default=NULL, help="Geno
 
 # Optional arguments
 parser$add_argument("--kinship", type="character", default=NULL, help="Kinship matrix file")
-parser$add_argument("--corvariance_matrix", type="character", default=NULL, help="Corvariance matrix file")
+parser$add_argument("--covariance_matrix", type="character", default=NULL, help="Covariance matrix file")
 
 parser$add_argument("--snp_maf", type="numeric", default=0.0, help="SNP minor allele frequency")
 parser$add_argument("--model", type="character", default="MLM", help="Model")
@@ -73,7 +73,7 @@ if (is.null(G) & is.null(GD) & is.null(GM)) {
 
 # Optional argument assignment
 KI <- args$kinship
-CV <- args$corvariance_matrix
+CV <- args$covariance_matrix
 SNP.MAF <- args$snp_maf
 model <- args$model
 PCA.total <- args$pca_total
@@ -309,15 +309,15 @@ if (!is.null(CV)) {
 	}
 	if (!is.null(CV)) {
 		if (nrow(CV) > 0 & ncol(CV) > 0){
-			print("Corvariance matrix (CV):")
+			print("Covariance matrix (CV):")
 			print(head(CV))
 			print(dim(CV))
 		}
 	} else {
-		print("Corvariance matrix (CV) is set to NULL!!!")
+		print("Covariance matrix (CV) is set to NULL!!!")
 	}
 } else {
-	print("Corvariance matrix (CV) is set to NULL!!!")
+	print("Covariance matrix (CV) is set to NULL!!!")
 }
 
 

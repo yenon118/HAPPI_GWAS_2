@@ -15,7 +15,7 @@ genotype_data = config['genotype_data']
 genotype_map = config['genotype_map']
 
 kinship = config['kinship']
-corvariance_matrix = config['corvariance_matrix']
+covariance_matrix = config['covariance_matrix']
 
 snp_maf = config['snp_maf']
 model = config['model']
@@ -42,7 +42,7 @@ print("genotype_data: ",genotype_data)
 print("genotype_map: ",genotype_map)
 
 print("kinship: ",kinship)
-print("corvariance_matrix: ",corvariance_matrix)
+print("covariance_matrix: ",covariance_matrix)
 
 print("snp_maf: ",snp_maf)
 print("model: ",model)
@@ -71,7 +71,7 @@ rule r_gapit:
         genotype_data=os.path.abspath(str(genotype_data)) if os.path.exists(os.path.abspath(str(genotype_data))) else 'NULL',
         genotype_map=os.path.abspath(str(genotype_map)) if os.path.exists(os.path.abspath(str(genotype_map))) else 'NULL',
         kinship=os.path.abspath(str(kinship)) if os.path.exists(os.path.abspath(str(kinship))) else 'NULL',
-        corvariance_matrix=os.path.abspath(str(corvariance_matrix)) if os.path.exists(os.path.abspath(str(corvariance_matrix))) else 'NULL',
+        covariance_matrix=os.path.abspath(str(covariance_matrix)) if os.path.exists(os.path.abspath(str(covariance_matrix))) else 'NULL',
         snp_maf=snp_maf,
         model=model,
         pca_total=pca_total,
@@ -94,7 +94,7 @@ rule r_gapit:
         --genotype_data {params.genotype_data} \
         --genotype_map {params.genotype_map} \
         --kinship {params.kinship} \
-        --corvariance_matrix {params.corvariance_matrix} \
+        --covariance_matrix {params.covariance_matrix} \
         --snp_maf {params.snp_maf} \
         --model {params.model} \
         --pca_total {params.pca_total} | tee {log} {output.out_file};
